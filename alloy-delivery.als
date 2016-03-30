@@ -37,8 +37,8 @@ sig Receptacle
  */
 sig Entrepot
 {
-    coordonnees : Coordonnees,
-	receptaclesVoisins : some Receptacle
+	coordonnees : Coordonnees,
+	receptaclesVoisinsEntrepot : some Receptacle
 }
 
 /**
@@ -79,7 +79,6 @@ fact invCoordonnees
 {
 	initInstances
 	predCoordonnees
-	predicatsPositions
 
 	receptaclesVoisins
 }
@@ -149,7 +148,8 @@ pred coordonneesEntrepot
 }
 
 /** 
-  * Verifie que les drones ne soient pas sur les memes coordonnees
+  * Verifie que les drones ne soient pas sur les memes coordonnees, a l'exception des entrepots,
+  * qui peuvent heberger plusieurs drones.
   */
 pred coordonneesDrones
 {
@@ -167,20 +167,22 @@ pred positionVoisin[c0, c1 : Coordonnees]
 /** 
   * Verifie que deux coordonnees soient au plus d'une distance de 3 cases (distance de manhattan)
   */
-pred predicatsPositions
+pred receptaclesVoisins
 {
-	positionVoisinEntrepot
-	positionVoisinReceptacles
-}
+  // Decommenter la ligne ci-dessous pour forcer plusieurs chemins en sortie de l'entrepot
+	// all e0 : Entrepot | #e0.receptaclesVoisins > 1
 
-pred positionVoisinEntrepot
-{
-	all e0 : Entrepot | (some r0 : Receptacle | e0.coordonnees.positionVoisin[r0.coordonnees])
-}
+	// Associe des receptacles voisins aux entrepots
+	all e0 : Entrepot, r0 : e0.receptaclesVoisinsEntrepot | e0.coordonnees.positionVoisin[r0.coordonnees] 
 
-pred positionVoisinReceptacles
-{
-	all r0 : Receptacle | (some r1 : Receptacle | r0 != r1 && r0.coordonnees.positionVoisin[r1.coordonnees])
+	// Empeche un receptacle d'etre son propre voisin
+	all r0 : Receptacle | !(r0 in r0.receptaclesVoisins)
+
+	// Associe pour chaque receptacle ses receptacles voisins
+	all r0 : Receptacle, r1 : r0.receptaclesVoisins | r0.coordonnees.positionVoisin[r1.coordonnees] && r0 in r1.receptaclesVoisins
+
+	// Verifie que chaque receptacle soit accessible depuis les entrepots
+	all e0 : Entrepot, r0 : Receptacle | some r1 : e0.receptaclesVoisinsEntrepot | r0 in r1.*receptaclesVoisins
 }
 
 /*
@@ -200,32 +202,12 @@ pred batterieDrones
 }
 */
 
-pred receptaclesVoisins
-{
-	all e0 : Entrepot | #e0.receptaclesVoisins > 1
-	all e0 : Entrepot, r0 : e0.receptaclesVoisins | e0.coordonnees.voisin[r0.coordonnees] 
-	all r0 : Receptacle | !(r0 in r0.receptaclesVoisins)
-	all r0 : Receptacle, r1 : r0.receptaclesVoisins | r0.coordonnees.voisin[r1.coordonnees] && r0 in r1.receptaclesVoisins
-	//all r0, r1 : Receptacle | r1 in r0.*receptaclesVoisins
-	all e0 : Entrepot, r0 : Receptacle | some r1 : e0.receptaclesVoisins | r0 in r1.*receptaclesVoisins
-//all e0 : Entrepot, r0 : e0.receptaclesVoisins, r1 : Receptacle |  r1 in r0.*receptaclesVoisins
-}
-
-pred voisin[c0,c1 : Coordonnees]
-{
-	(c0.x = c1.x && c0.y = c1.y.add[1]) ||
-	(c0.x = c1.x && c0.y = c1.y.sub[1]) ||
-	(c0.x = c1.x.add[1] && c0.y = c1.y) ||
-	(c0.x = c1.x.sub[1] && c0.y = c1.y)
-}
-
-pred chemin[c0,c1 : Coordonnees]
-{
-	
-}
-
 /********************************* Assertions *********************************/
 
+/**
+ * Verifie qu'il n'existe pas deux drones sur les memes coordonnees, a l'exception
+ * des entrepots.
+ */
 assert assertCoordonneesDrones 
 {
 	no d0 : Drone | 
@@ -235,22 +217,28 @@ assert assertCoordonneesDrones
 
 check assertCoordonneesDrones for 10 but 6 int
 
-//
-
+/**
+ * Verifie la tolerance d'un cas particulier : 2 receptacles sont voisins d'un
+ * entrepot, sans etre voisins entre eux.
+ * /!\ : Fonctionne que si la cardinalite des receptacles en sortie de l'entrepot
+ * est > 1.
+ */
 assert assertReceptablesVoisinsEntrepotMaisPasEntreEux 
 {
 	some r0, r1 : Receptacle, e0 : Entrepot
 	 | r0 != r1 && 
-	   !r0.coordonnees.voisin[r1.coordonnees] && 
-	   e0.coordonnees.voisin[r0.coordonnees] &&
-	   e0.coordonnees.voisin[r1.coordonnees]
+	   !r0.coordonnees.positionVoisin[r1.coordonnees] && 
+	   e0.coordonnees.positionVoisin[r0.coordonnees] &&
+	   e0.coordonnees.positionVoisin[r1.coordonnees]
 }
 
 check assertReceptablesVoisinsEntrepotMaisPasEntreEux for 8 but 6 int
 
 /********************************* Lancements *********************************/
 
-// Run Go
+/**
+ * Predicat vide permettant la simulation
+ */ 
 pred go
 {
 }
