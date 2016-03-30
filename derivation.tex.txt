@@ -1,0 +1,270 @@
+%%% Preamble
+\documentclass[11pt]{article}
+\usepackage[paper=A4,pagesize]{typearea}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,pdftex]{geometry}	% Use A4 paper margins
+\usepackage[french]{babel}
+\usepackage{xcolor} % Required for specifying custom colors
+\usepackage{fix-cm} % Allows increasing the font size of specific fonts beyond LaTeX default specifications
+\usepackage{hyperref}
+\usepackage{todonotes}
+\usepackage{wrapfig}
+\usepackage{pdfpages}
+\usepackage{afterpage}
+\usepackage{algorithm}
+\usepackage{caption}
+
+\usepackage[noend]{algpseudocode}
+\DeclareUnicodeCharacter{00A0}{ }
+
+\DeclareCaptionFormat{algor}{%
+  \hrulefill\par\offinterlineskip\vskip1pt%
+    \textbf{#1#2}#3\offinterlineskip\hrulefill}
+\DeclareCaptionStyle{algori}{singlelinecheck=off,format=algor,labelsep=space}
+\captionsetup[algorithm]{style=algori}
+\begin{document}
+\title{ Dérivation d'un multi-programme }
+\author{H4311}
+\date{\today}
+
+\maketitle
+\section{Spécification formelle du programme}
+\paragraph{
+Dériver un multi-programme qui permette à des drones voulant accéder à une même position au prochain pas de temps d'élire celui d'entre eux qui sera prioritaire.\\
+Le processus $P.$i (associé au drone $i$) possède la variable booléenne $y.i$ qu'il est seul à pouvoir modifier. Chaque $P.i$ affecter une valeur à cette variable. Le problème est de synchroniser les processus pour qu'à leur terminaison la post-condition suivante soit établie :
+}
+$$R:(\#i::y.i)=1$$
+\section{Dérivation}
+\paragraph{
+L'expression de R qui nous est donnée dans la spécification formelle du programme est difficilement exploitable telle quelle. On peut la reformuler sous la forme suivante  :
+}
+$$R : (\exists j :: y.j) \wedge (\forall i,j :: y.i \wedge y.j \Rightarrow i=j)$$
+
+\paragraph{
+La partie gauche de cette conjonction signifie qu'il existe au moins un $j$ tel que $y.j$ soit vrai, alors que la partie droite siginifie qu'il en existe au plus un. 
+Cette expression est donc cohérente avec ce que que l'on cherche, c'est à dire obtenir un unique $j$ pour lequel $y.j =1$. \\ 
+On sait qu'à un certain moment du programme, on devra affecter une certaine valeur à $y.i$. On peut donc donner une première forme du programme  : 
+}
+
+
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $y.i \gets B.i$
+\State $\{ ? y.i \equiv B.i \}$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+\paragraph{
+Nous considérons ici un multi-programme. Il est donc possible qu'après l'execution de $y.i := B.i$ un autre programme vienne changer la valeur de B.i, l'assertion $y.i \equiv B.i$ serait falsifiée. Cette assertion, de part l'affectation $y.i := B.i$ est localement vraie, mais pas forcèment globalement vraie.\\
+Dans un premier temps, supposons que $y.i \equiv B.i$ soit globalement vraie dans le programme. C'est pour l'instant une hypothèse, qu'on validera par la suite. \\
+On a:
+}
+$$wlp.(y.i := B.j).(R)$$
+$$=\{définition de :=\}$$
+$$R : (\exists j :: B.j) \wedge (\forall i,j :: B.i \wedge B.j \Rightarrow i=j)$$
+\paragraph{
+On veut obtenir cette post-condition à la fin de l'execution de l'ensemble des programmes, on veut donc que cette conjonction soit vraie. Si l'on étudie la deuxième partie de cette conjonction, c'est à dire $(\forall i,j :: B.i \wedge B.j \Rightarrow i=j)$, on aurait plusieurs possibilité pour la rendre vraie :\\
+}
+\begin{itemize}
+\item On pourrait essayer de chercher $B.i$ et $B.j$ tels que $B.i \wedge B.j$ soit tout le temps faux (Car, trivialement, $\neg(B.i \wedge B.j) \Rightarrow (B.i \wedge B.j \Rightarrow i=j )$). Cependant, nous n'avons ici aucune information sur les B.i.
+\item On peut se servir de la propriété de transitivité de l'égalité, c'est à dire $(a=b) \wedge (b=c) \Rightarrow (a=c)$. En posant $B.i$ de la forme $i=\alpha$, on aurait alors $(\forall i,j :: i=\alpha \wedge j=alpha  \Rightarrow i=j)$ qui est toujours vrai. 
+\end{itemize}
+
+\paragraph{
+Le programme aurait alors la forme suivante : 
+}
+
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $y.i \gets (i=\alpha)$
+\State $\{ ? y.i \equiv (i=\alpha) \}$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+\paragraph{
+On veut rendre $y.i$ vrai, pour cela on peut simplement faire l'affectation $\alpha := i$ en début du programme $P.i$
+}
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $\alpha \gets i$
+\State $y.i \gets (i=\alpha)$
+\State $\{ ? y.i \equiv (i=\alpha) \}$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+\paragraph{
+On a précédemment fais l'hypothèse que $y.i \equiv B.i$ était vrai globalement après avoir fait l'affectation de $y:i$ dans le programme $P.i$. On doit maintenant prouver que cette hypothèse est vérifiée. Lorsqu'on regarde la forme des programmes, on observe que seule l'instruction $\alpha := j$, avec $P.j$ un autre programme, peut rendre $y.i \equiv B.i$ faux, car la valeur de $\alpha$ est changée.\\\\
+On peut alors rechercher la précondition (libérale) la plus faible $wlp$ qui, au travers du programme $\alpha := j$, établira la post-condition $y.i \equiv B.i$. En effet si l'on arrive par la suite à vérifier une contrainte $P$ plus forte que cette précondition la plus faible, alors on pourra affimer que $y.i \equiv (i=\alpha)$ est vraie globalement.\\\\
+Soit $P \equiv (y.i \equiv (i=\alpha))$. On veut $P \Rightarrow wp.(\alpha := j).P$. On a alors :\\\\
+}
+$$wlp.(\alpha := j).P$$
+$$ 	=\{definition\ de :=\} $$
+$$y.i \equiv (i=j)$$
+$$=y.i \equiv Faux$$
+$$=\neg y.i$$
+
+\paragraph{
+En réécrivant l'implication $P \Rightarrow wp.(\alpha := j).P$:\\
+}
+
+$$P \Rightarrow \neg y.i$$
+$$= (y:i \equiv (i=\alpha)) \Rightarrow \neg y.i$$
+$$= \neg(y:i \equiv (i=\alpha)) \vee \neg y.i$$
+$$= \{ \neg(a \equiv b) \equiv (\neg a \equiv b)\}$$
+$$ \neg y:i \equiv (i=\alpha) \vee \neg y.i$$
+
+\paragraph{
+On obtient l'expression $ \neg y:i \equiv (i=\alpha) \vee \neg y.i$. Étudions la table de vérité d'une expression de la forme $a \equiv b \vee a:$\\
+}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+  \hline
+  a & b & $a \vee b$ & $a \equiv b \vee a$ & $b \Leftarrow a$\\
+  \hline
+  0 & 0 & 0 & 1 & 1\\
+  0 & 1 & 1 & 0 & 0 \\
+  1 & 0 & 1 & 1 & 1\\
+  1 & 1 & 1 & 1 & 1\\
+  \hline
+\end{tabular}
+\end{center}
+
+\paragraph{
+D'après la table de vérité on peut déduire que :
+}
+$$ (\neg y:i \equiv (i=\alpha) \vee \neg y.i) = ((i \neq \alpha) \vee \neg y.i) $$
+
+\paragraph{
+Cette contrainte $((i \neq \alpha) \vee \neg y.i)$ permet bien d'assurer que $y.i \equiv (i=\alpha)$ est vraie globalement. Cependant elle implique aussi que $y.i$ ne sera jamais vrai. En effet si $i \neq \alpha$ est vrai, alors l'affectation $y.i = (i=\alpha)$ rend y.i faux. Et si $\neg y.i $ est vérifié alors trivialement y.i est faux. Si $y.i$ n'est jamais vrai, alors la post condition du multi-programme ne sera jamais atteinte.\\\\
+NB: On trouve ce résultat car on ne s'occupe que de la partie droite de R, celle qui définit qu'il y a au plus un i qui valide y.i, sans se préoccuper de la partie gauche, qui elle fait en sorte qu'il y ait au moins un y.i vrai.\\\\ 
+Nous alons donc devoir contraindre davantage le système. 
+Posons C.i une contrainte vérifié à l'endroit du programme ou l'on veut s'assurer que $y.i \equiv (i=\alpha)$ soit vraie globalement et D.j la précondition pour qu'un autre programme, différent de $P.i$, réalise l'affectation $\alpha := j$. Les programmes $P.i$ et $P.j$ ont alors la forme suivante :
+}
+
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $\alpha \gets i$
+\State $y.i \gets (i=\alpha)$
+\State $\{C.i\}\{ ? y.i \equiv (i=\alpha) \}$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+\begin{center}
+\captionof{algorithm}{Programme $P.j$}
+\begin{algorithmic}
+\Procedure{P.j}{}
+\State $\{D.j\}\alpha \gets j$
+\State $y.j \gets (j=\alpha)$
+\State $\{ ? y.j \equiv (j=\alpha) \}$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+\paragraph{
+NB: Les programmes sont tous symétriques, c'est à dire que le programme $P.i$ contiendra aussi un $D.i$ et le programme $P.j$ contiendra un $C.j$. Afin de rendre plus compréhensible la réflexion, on ne notera que $C.i$ et $D.j$.
+On a alors:
+}
+$$\forall j: j\neq i: P\wedge C.i \wedge D.j \Rightarrow wlp.(\alpha := j).P$$
+$$= \{( a \wedge b \Rightarrow c) \equiv (a \Rightarrow (b \Rightarrow c))\}$$
+$$\forall j: j\neq i: C.i \wedge D.j \Rightarrow P\wedge wlp.(\alpha := j).P$$
+$$=\{calcul\ precedent\} $$
+$$= \forall j: j\neq i:C.i \wedge D.j \Rightarrow ((i \neq \alpha) \vee \neg y.i)$$
+$$= \{( a \wedge b \Rightarrow c) \equiv (a \Rightarrow (b \Rightarrow c))\}$$
+$$ C.i \Rightarrow \forall j: j\neq i: \neg D.j \vee i \neq \alpha \vee \neg y.i $$
+\paragraph{
+On peut enlever $\neg y.i$ dans cette expression, car celui-ci est redondant avec $i \neq \alpha$. En effet, suite à l'affectation $y:=(i = \alpha)$, si $i \neq \alpha$, on a $\neg y.i$.
+On essaie donc avec: 
+}
+$$C.i \equiv \forall j:j \neq i : \neg D.j \vee i \neq \alpha$$
+
+\paragraph{
+Le programme aurait alors à présent la forme suivante :\\
+}
+
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $\{D.i\}\alpha \gets i$
+\If {$\forall j:j \neq i : \neg D.j \vee i \neq \alpha$}
+\State skip
+\EndIf
+\State $y.i \gets (i=\alpha)$
+\State $\{ ? y.i \equiv (i=\alpha) \}$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+\paragraph{
+On doit bien faire la vérification sur C.i avant de faire l'affectation $y.j \gets (j=\alpha)$ car cette affectation est de toute manière la dernière instruction du programme : on est pas interéssé par ce qui ce passe après avoir affecté la valeur à $y.i$.
+On a donc ici un if bloquant. La vérification de C.i n'est clairement pas une opération atomique, et c'est potentiellement un problème. Avant de le traiter, interessons nous aux $D.j$. La condition du if est $\forall j:j \neq i : \neg D.j \vee i \neq \alpha$. Si le if est débloqué car le membre de droite de la disjonction est vrai, c'est à dire que $i \neq \alpha $, alors lors de l'affectation de $y.i$, la valeur affectée sera $Faux$. Rendre vrai le membre de gauche de la  disjonction, c'est à dire rendre $\neg D.j$ vrai pour chaque $P.j$ différent de ${P.i}$, est donc le seul moyen d'affecter la valeur $Vrai$ à $y.i$. On comprend bien ici que $D.j$ doit devenir une variable, qui doit être vraie pour chaque programme $P.j$ tant que ce $P.j$ n'a pas réalisé l'affectation de $\alpha$. 
+}
+
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $\alpha \gets i$
+\State $D.i \gets False$
+\If {$\forall j:j \neq i : \neg D.j \vee i \neq \alpha$}
+\State skip
+\EndIf
+\State $y.j \gets (i=\alpha)$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+
+\paragraph{
+On supposera dans cet algorithme que $D.i$ a été préalablement initialisé avec la valeur $Vrai$.
+On peut maintenant discuter de l'atomicité de la vérification de la condition du if, qui est {$\forall j:j \neq i : \neg D.j \vee i \neq \alpha$}. Cette opération de vérification n'est clairement pas atomique, et il paraît compliqué de la rendre atomique. Considérons le raisonnement suivant :  \\
+}
+
+\begin{itemize}
+\item Si on a évalué $i \neq \alpha$ Vrai et que le programme perd la main : cette assertion restera toujours vraie car le programme $P.i$ que l'on considère ne peut plus changer la valeur de $\alpha$ afin de faire $\alpha := i$, et c'est le seul programme qui aurait pu le faire car tout les indices de programme sont différents. 
+\item Si l'on a évalué l'un des $D.j$ à $Faux$ et que le programme perd la main : une fois que la valeur d'un $D.j$ a changé de $Vrai$ à $Faux$, elle ne peut plus être changée. Donc le $D.j$ évalué $Faux$ restera $Faux$, et donc $\neg D.j$ restera $Vrai$.
+\end{itemize}
+
+\paragraph{
+La non-atomicité de la condition du if n'est donc pas un problème en réalité, car les différentes propositions qui la composent ne peuvent changer de valeur qu'à un seul moment de l'ensemble du multi-programme, et ne peuvent plus changer de valeur par la suite. \\\\
+NB: On peut remarquer que le programme qui va mettre y.i à $Vrai$ est celui qui s'exécutera en dernier \\
+La condition $\forall j:j \neq i : \neg D.j \vee i \neq \alpha$ correspond à une série de if bloquant. 
+Si on devait implémenter ce code, il serait certainement plus élégant de remplacer cette série de vérifications par une seule variable, un compteur qui compte le nombre d'affectations de $\alpha$. Appelons c le compteur et n le nombre de programmes tournant un parallèle, avec en précondition de notre multiprogramme :\\
+}
+
+$$c=0$$
+
+\paragraph{
+Le programme devient alors :
+}
+
+\begin{center}
+\captionof{algorithm}{Programme $P.i$}
+\begin{algorithmic}
+\Procedure{P.i}{}
+\State $\alpha \gets i$
+\State $c \gets c+1$
+\If {$c \ge n-1 \vee i \neq \alpha$}
+\State skip
+\EndIf
+\State $y.j \gets (i=\alpha)$
+\EndProcedure
+\end{algorithmic}
+\end{center}
+
+
+
+\end{document}
