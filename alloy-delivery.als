@@ -62,7 +62,8 @@ sig Commande
 
 /********************************* Fonctions *********************************/
 
-/** Calcul la valeur absolue d'un entier
+/** 
+  * Calcule la valeur absolue d'un entier
   * Retourne : la valeur absolue de l'entier X
   */
 fun abs[x: Int]: Int {
@@ -71,6 +72,9 @@ fun abs[x: Int]: Int {
 
 /********************************* Faits *********************************/
 
+/** 
+  * Ensemble des faits pour placer les elements avec leurs coordonnees
+  */
 fact invCoordonnees
 {
 	initInstances
@@ -89,14 +93,19 @@ fact initCapacites
 }
 */
 
-/********************************* Prédicats *********************************/
+/********************************* Predicats *********************************/
 
+/** 
+  * Vérifie que deux coordonnees sont egales
+  */
 pred coordonneesEgales[c0,c1 : Coordonnees]
 {
 	c0.x = c1.x && c0.y = c1.y
 }
 
-// Initialisation du nombre d'instances qui sont contraintes
+/** 
+  * Initialise le nombre d'instances des objets
+  */
 pred initInstances
 {
 	one Entrepot
@@ -104,6 +113,9 @@ pred initInstances
 	#Receptacle = 5	// RNB
 }
 
+/** 
+  * Ensemble des predicats qui contraignent les coordonnees
+  */
 pred predCoordonnees
 {
 	coordonneesUniques
@@ -112,46 +124,49 @@ pred predCoordonnees
 	coordonneesDrones
 }
 
-// Les instances de Coordonnées doivent correspondre à des cases différentes
+/** 
+  * Verifie que les instances de Coordonnees sont sur des cases differentes
+  */
 pred coordonneesUniques
 {
 	no c0, c1 : Coordonnees | (c0 != c1 && c1.coordonneesEgales[c0])
 }
 
-// Les réceptacles ne peuvent avoir les mêmes coordonnées
+/** 
+  * Verifie que les receptacles soient sur des coordonnees differentes
+  */
 pred coordonneesReceptacles
 {
 	no r0, r1 : Receptacle | (r0 != r1 && r0.coordonnees = r1.coordonnees)
 }
 
-// Les réceptacles ne peuvent pas avoir les mêmes coordonnées que les entrepôts
+/** 
+  * Verifie que les receptacles ne soient pas sur les coordonnees des entrepots
+  */
 pred coordonneesEntrepot
 {
 	no r : Receptacle, e : Entrepot | r.coordonnees = e.coordonnees
 }
 
-// Les drones ne peuvent se trouver sur les mêmes cases
+/** 
+  * Verifie que les drones ne soient pas sur les memes coordonnees
+  */
 pred coordonneesDrones
 {
 	no d0, d1 : Drone | (d0 != d1  && d0.coordonnees = d1.coordonnees && (no e0 : Entrepot | d0.coordonnees = e0.coordonnees))
 }
 
-assert assertCoordonneesDrones 
-{
-	no d0 : Drone | 
-			(no e0 : Entrepot | e0.coordonnees = d0.coordonnees) 
- 	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees = d1.coordonnees)
-}
-
-check assertCoordonneesDrones for 10
-
-// Prédicats sur les distances et localisations géographiques
-// distance de manhattan 
+/** 
+  * Verifie que deux coordonnees soient au plus d'une distance de 3 cases (distance de manhattan)
+  */
 pred positionVoisin[c0, c1 : Coordonnees]
 {
 	abs[c0.x.sub[c1.x]].add[abs[c0.y.sub[c1.y]]] =< 3
 }
 
+/** 
+  * Verifie que deux coordonnees soient au plus d'une distance de 3 cases (distance de manhattan)
+  */
 pred predicatsPositions
 {
 	positionVoisinEntrepot
@@ -209,6 +224,19 @@ pred chemin[c0,c1 : Coordonnees]
 	
 }
 
+/********************************* Assertions *********************************/
+
+assert assertCoordonneesDrones 
+{
+	no d0 : Drone | 
+			(no e0 : Entrepot | e0.coordonnees = d0.coordonnees) 
+ 	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees = d1.coordonnees)
+}
+
+check assertCoordonneesDrones for 10 but 6 int
+
+//
+
 assert assertReceptablesVoisinsEntrepotMaisPasEntreEux 
 {
 	some r0, r1 : Receptacle, e0 : Entrepot
@@ -220,11 +248,11 @@ assert assertReceptablesVoisinsEntrepotMaisPasEntreEux
 
 check assertReceptablesVoisinsEntrepotMaisPasEntreEux for 8 but 6 int
 
+/********************************* Lancements *********************************/
 
 // Run Go
 pred go
 {
-	receptaclesVoisins
 }
 
 run go for 8 but 6 int
