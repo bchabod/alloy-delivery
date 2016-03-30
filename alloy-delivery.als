@@ -36,10 +36,8 @@ pred coordonneesEgales[c0,c1 : Coordonnees]
 fact invCoordonnees
 {
 	initInstances
-	coordonneesUniques
-	coordonneesReceptacles
-	coordonneesEntrepot
-	coordonneesDrones
+	predCoordonnees
+	predicatsPositions
 }
 
 // Initialisation du nombre d'instances qui sont contraintes
@@ -47,7 +45,15 @@ pred initInstances
 {
 	one Entrepot
 	#Drone = 3 			// DNB
-	#Receptacle = 2	// RNB
+	#Receptacle = 5	// RNB
+}
+
+pred predCoordonnees
+{
+	coordonneesUniques
+	coordonneesReceptacles
+	coordonneesEntrepot
+	coordonneesDrones
 }
 
 // Les instances de Coordonnées doivent correspondre à des cases différentes
@@ -89,9 +95,25 @@ pred positionVoisin[c0, c1 : Coordonnees]
 	abs[c0.x.sub[c1.x]].add[abs[c0.y.sub[c1.y]]] =< 3
 }
 
+pred predicatsPositions
+{
+	positionVoisinEntrepot
+	positionVoisinReceptacles
+}
+
+pred positionVoisinEntrepot
+{
+	all e0 : Entrepot | (some r0 : Receptacle | e0.coordonnees.positionVoisin[r0.coordonnees])
+}
+
+pred positionVoisinReceptacles
+{
+	all r0 : Receptacle | (some r1 : Receptacle | r0 != r1 && r0.coordonnees.positionVoisin[r1.coordonnees])
+}
+
 pred go
 {
     
 }
 
-run go for 5
+run go for 10
