@@ -3,28 +3,28 @@ open util/integer
 sig Drone
 {
     coordonnees : Coordonnees,
-	capaciteMax : Int, 
-	contenanceActuel : Int,
-	batterie : Int
+//	capaciteMax : Int, 
+//	contenanceActuel : Int,
+//	batterie : Int
 }
 
 sig Receptacle
 {
     coordonnees : Coordonnees,
-	capaciteMax : Int, 
-	contenanceActuel : Int
+//	capaciteMax : Int, 
+//	contenanceActuel : Int
 }
 
 sig Entrepot
 {
     coordonnees : Coordonnees
 }
-
+/*
 sig Commande
 {
 	contenanceActuel: Int
 }
-
+*/
 sig Coordonnees
 {
     x : Int,
@@ -49,14 +49,14 @@ fact invCoordonnees
 	predCoordonnees
 	predicatsPositions
 }
-
+/*
 fact initCapacites
 {
 	capacitesReceptacles
 	capacitesDrones
 	batterieDrones
 }
-
+*/
 // Initialisation du nombre d'instances qui sont contraintes
 pred initInstances
 {
@@ -129,6 +129,7 @@ pred positionVoisinReceptacles
 	all r0 : Receptacle | (some r1 : Receptacle | r0 != r1 && r0.coordonnees.positionVoisin[r1.coordonnees])
 }
 
+/*
 pred capacitesReceptacles
 {
 	all r : Receptacle | r.capaciteMax = 7 && r.contenanceActuel = 0//RCAP
@@ -143,10 +144,25 @@ pred batterieDrones
 {
 	all d : Drone | d.batterie = 3
 }
+*/
+
+pred voisin[c0,c1 : Coordonnees]
+{
+	(c0.x = c1.x && c0.y = c1.y.add[1]) ||
+	(c0.x = c1.x && c0.y = c1.y.sub[1]) ||
+	(c0.x = c1.x.add[1] && c0.y = c1.y) ||
+	(c0.x = c1.x.sub[1] && c0.y = c1.y)
+}
+
+pred chemin[c0,c1 : Coordonnees]
+{
+
+}
 
 // Run Go
 pred go
 {
+
 }
 
 run go for 10
