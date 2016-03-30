@@ -2,17 +2,27 @@ open util/integer
 
 sig Drone
 {
-    coordonnees : Coordonnees
+    coordonnees : Coordonnees,
+	capaciteMax : Int, 
+	contenanceActuel : Int,
+	batterie : Int
 }
 
 sig Receptacle
 {
-    coordonnees : Coordonnees
+    coordonnees : Coordonnees,
+	capaciteMax : Int, 
+	contenanceActuel : Int
 }
 
 sig Entrepot
 {
     coordonnees : Coordonnees
+}
+
+sig Commande
+{
+	contenanceActuel: Int
 }
 
 sig Coordonnees
@@ -39,6 +49,20 @@ fact invCoordonnees
 	predCoordonnees
 	predicatsPositions
 }
+
+fact initCapacites
+{
+	capacitesReceptacles
+	capacitesDrones
+	batterieDrones
+}
+
+pred go
+{
+    
+}
+
+run go for 5
 
 // Initialisation du nombre d'instances qui sont contraintes
 pred initInstances
@@ -90,6 +114,7 @@ assert assertCoordonneesDrones
 check assertCoordonneesDrones for 10
 
 // Prédicats sur les distances et localisations géographiques
+// distance de manhattan 
 pred positionVoisin[c0, c1 : Coordonnees]
 {
 	abs[c0.x.sub[c1.x]].add[abs[c0.y.sub[c1.y]]] =< 3
@@ -111,9 +136,24 @@ pred positionVoisinReceptacles
 	all r0 : Receptacle | (some r1 : Receptacle | r0 != r1 && r0.coordonnees.positionVoisin[r1.coordonnees])
 }
 
+pred capacitesReceptacles
+{
+	all r : Receptacle | r.capaciteMax = 7 && r.contenanceActuel = 0//RCAP
+}
+
+pred capacitesDrones
+{
+	all d : Drone | d.capaciteMax = 2 && d.contenanceActuel = 0 //DCAP
+ 
+}
+
+pred batterieDrones
+{
+	all d : Drone | d.batterie = 3
+}
+
 pred go
 {
-    
 }
 
 run go for 10
