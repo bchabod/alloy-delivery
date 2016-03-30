@@ -57,13 +57,6 @@ fact initCapacites
 	batterieDrones
 }
 
-pred go
-{
-    
-}
-
-run go for 5
-
 // Initialisation du nombre d'instances qui sont contraintes
 pred initInstances
 {
@@ -144,7 +137,6 @@ pred capacitesReceptacles
 pred capacitesDrones
 {
 	all d : Drone | d.capaciteMax = 2 && d.contenanceActuel = 0 //DCAP
- 
 }
 
 pred batterieDrones
@@ -152,6 +144,7 @@ pred batterieDrones
 	all d : Drone | d.batterie = 3
 }
 
+// Run Go
 pred go
 {
 }
