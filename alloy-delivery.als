@@ -1,5 +1,12 @@
 open util/integer
 
+/********************************* Signatures *********************************/
+
+/**
+ * Signature de l'objet Drone
+ * Attributs :
+ *    coordonnees : coordonnees actuelles du drone
+ */
 sig Drone
 {
     coordonnees : Coordonnees,
@@ -8,47 +15,71 @@ sig Drone
 //	batterie : Int
 }
 
+/**
+ * Signature de l'objet Receptacle
+ * Attributs :
+ *    coordonnees : coordonnees du receptables
+ *    receptaclesVoisins : tous les receptables voisins de ce receptable
+ */
 sig Receptacle
 {
     coordonnees : Coordonnees,
 //	capaciteMax : Int, 
 //	contenanceActuel : Int
+	receptaclesVoisins : some Receptacle
 }
 
+/**
+ * Signature de l'objet Entrepot
+ * Attributs :
+ *    coordonnees : coordonnees de l'entrepot
+ *    receptaclesVoisins : tous les receptables voisins de cet entrepot
+ */
 sig Entrepot
 {
-    coordonnees : Coordonnees
+    coordonnees : Coordonnees,
+	receptaclesVoisins : some Receptacle
 }
-/*
-sig Commande
-{
-	contenanceActuel: Int
-}
-*/
+
+/**
+ * Signature de l'objet Coordonnees
+ * Attributs :
+ *    x : coordonnee X (entier) de cette coordonnee
+ *    Y : coordonnee Y (entier) de cette coordonnee
+ */
 sig Coordonnees
 {
     x : Int,
     y : Int
 }
 
+/*
+sig Commande
+{
+	contenanceActuel: Int
+}
+*/
 
-// Fonctions
+/********************************* Fonctions *********************************/
+
+/** Calcul la valeur absolue d'un entier
+  * Retourne : la valeur absolue de l'entier X
+  */
 fun abs[x: Int]: Int {
     x >= 0 => x else x.mul[-1]
 }
 
-pred coordonneesEgales[c0,c1 : Coordonnees]
-{
-	c0.x = c1.x && c0.y = c1.y
-}
+/********************************* Faits *********************************/
 
-/* Receptable.coordonnes != Entrepot.coordonnes */
 fact invCoordonnees
 {
 	initInstances
 	predCoordonnees
 	predicatsPositions
+
+	receptaclesVoisins
 }
+
 /*
 fact initCapacites
 {
@@ -57,6 +88,14 @@ fact initCapacites
 	batterieDrones
 }
 */
+
+/********************************* Prédicats *********************************/
+
+pred coordonneesEgales[c0,c1 : Coordonnees]
+{
+	c0.x = c1.x && c0.y = c1.y
+}
+
 // Initialisation du nombre d'instances qui sont contraintes
 pred initInstances
 {
@@ -146,6 +185,17 @@ pred batterieDrones
 }
 */
 
+pred receptaclesVoisins
+{
+	all e0 : Entrepot | #e0.receptaclesVoisins > 1
+	all e0 : Entrepot, r0 : e0.receptaclesVoisins | e0.coordonnees.voisin[r0.coordonnees] 
+	all r0 : Receptacle | !(r0 in r0.receptaclesVoisins)
+	all r0 : Receptacle, r1 : r0.receptaclesVoisins | r0.coordonnees.voisin[r1.coordonnees] && r0 in r1.receptaclesVoisins
+	//all r0, r1 : Receptacle | r1 in r0.*receptaclesVoisins
+	all e0 : Entrepot, r0 : Receptacle | some r1 : e0.receptaclesVoisins | r0 in r1.*receptaclesVoisins
+//all e0 : Entrepot, r0 : e0.receptaclesVoisins, r1 : Receptacle |  r1 in r0.*receptaclesVoisins
+}
+
 pred voisin[c0,c1 : Coordonnees]
 {
 	(c0.x = c1.x && c0.y = c1.y.add[1]) ||
@@ -156,13 +206,25 @@ pred voisin[c0,c1 : Coordonnees]
 
 pred chemin[c0,c1 : Coordonnees]
 {
-
+	
 }
+
+assert assertReceptablesVoisinsEntrepotMaisPasEntreEux 
+{
+	some r0, r1 : Receptacle, e0 : Entrepot
+	 | r0 != r1 && 
+	   !r0.coordonnees.voisin[r1.coordonnees] && 
+	   e0.coordonnees.voisin[r0.coordonnees] &&
+	   e0.coordonnees.voisin[r1.coordonnees]
+}
+
+check assertReceptablesVoisinsEntrepotMaisPasEntreEux for 8 but 6 int
+
 
 // Run Go
 pred go
 {
-
+	receptaclesVoisins
 }
 
-run go for 10
+run go for 8 but 6 int
