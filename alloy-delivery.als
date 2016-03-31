@@ -1,6 +1,24 @@
 open util/integer
+open util/ordering[Time] as to
 
 /********************************* Signatures *********************************/
+
+/**
+ * Signature Time pour simuler le temps.
+ */
+sig Time
+{
+}
+
+/**
+ * Signature de l'objet Chemin
+ * Attributs :
+ *    receptaclesVisites : ensemble (0..*) des réceptacles qui ont déjà été parcourus
+ */
+sig Chemin
+{
+	receptaclesVisites : set Receptacle
+}
 
 /**
  * Signature de l'objet Drone
@@ -9,10 +27,13 @@ open util/integer
  */
 sig Drone
 {
-    coordonnees : Coordonnees,
+    coordonnees : Coordonnees one -> Time,
+	batterie : Int one -> Time,
+	commande : lone Commande,
+	receptacleCible : lone Receptacle -> Time,
 //	capaciteMax : Int, 
 //	contenanceActuel : Int,
-//	batterie : Int
+	cheminTraverse : Chemin one -> Time
 }
 
 /**
@@ -53,13 +74,16 @@ sig Coordonnees
     y : Int
 }
 
-/*
+/**
+ * Signature de l'objet Commande
+ * Attributs :
+ *	  coordonneesLivraison : Coordonnees ou doit etre effectuee la livraison
+ */ 
 sig Commande
 {
-	contenanceActuel: Int
+	coordonneesLivraison : Coordonnees,
+//	contenanceActuelle: Int
 }
-*/
-
 /********************************* Fonctions *********************************/
 
 /** 
@@ -68,6 +92,14 @@ sig Commande
   */
 fun abs[x: Int]: Int {
     x >= 0 => x else x.mul[-1]
+}
+
+/** 
+  * Calcule la valeur max entre deux entiers
+  * Retourne : la valeur max entre a et b
+  */
+fun max[a, b: Int]: Int {
+	a > b => a else b
 }
 
 /********************************* Faits *********************************/
@@ -92,6 +124,77 @@ fact initCapacites
 }
 */
 
+/**
+ * Sequences d'execution
+ */
+fact traces 
+{
+	init [to/first]
+	all t: Time - to/last | 
+		let t' = t.next | all drone: Drone | deplacerDrone[t, t', drone]
+}
+
+/**
+ * Initialisation à T0
+ */
+pred init [t: Time]
+{
+	// Tous les drones sont sur un entrepot
+	all d: Drone | some e: Entrepot | d.coordonnees.t = e.coordonnees
+
+	// TODO : une commande ne peut etre partagee par plusieurs drones
+	// Tous les drones se chargent d'une commande TODO : à vérifier
+	all d: Drone | #d.commande = 1
+	
+	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
+	// TODO : vérifier cette ligne, elle me parait extremement louche et fumeuse.
+	// /!\/!\ 
+	all d: Drone, e: Entrepot | d.receptacleCible.coordonnees.positionVoisin[e.coordonnees]
+	
+	// Initialise la batterie au max
+	all d: Drone | d.batterie.t = 3
+
+	// Les chemins sont nuls pour les drones à T0
+	all d: Drone | #d.cheminTraverse.t.receptaclesVisites = 0
+	
+	// TODO : peut être mettre ailleurs, à voir
+	// Les chemins appartiennent seulement aux drones
+	all c: Chemin | some d: Drone | d.cheminTraverse.t = c
+}
+
+/**
+ * Opération : Déplacement de drone
+ * Précondition : 
+ */
+pred deplacerDrone [t, t': Time, drone: Drone] 
+{
+	// TODO : Mais pourquoi faire sauter la précondition ? Chaque opération devra avoir sa précondition
+	// Précondition
+	//drone.commande.coordonnees != drone.coordonnees.t	
+
+	// TODO : Vérifier cette opération, éléments forts suspects
+
+   //normalement la première condition est déjà vérifiée
+	drone.coordonnees.t.positionVoisin[drone.receptacleCible.coordonnees] 
+ && !(drone.receptacleCible in drone.cheminTraverse.t.receptaclesVisites)
+ &&
+(
+	(drone.receptacleCible.coordonnees.x > drone.coordonnees.t.x && drone.coordonnees.t'.x = drone.coordonnees.t.x.add[1] && drone.coordonnees.t'.y = drone.coordonnees.t.y)
+||(drone.receptacleCible.coordonnees.x < drone.coordonnees.t.x && drone.coordonnees.t'.x = drone.coordonnees.t.x.sub[1] && drone.coordonnees.t'.y = drone.coordonnees.t.y)
+||(drone.receptacleCible.coordonnees.y > drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.add[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
+||(drone.receptacleCible.coordonnees.y < drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.sub[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
+)
+
+	//si un drone est sur son réceptacle cible, on l'ajoute au chemin, et on prend le prochain
+	(drone.coordonnees.t = drone.receptacleCible.coordonnees) <=> (drone.receptacleCible in drone.cheminTraverse.t'.receptaclesVisites)
+
+	// TODO : C'est quoi cette téléportation ?
+    	some c: drone.coordonnees.t' , r:Receptacle | c = r.coordonnees
+
+	// Diminution de la batterie
+	drone.batterie.t' = drone.batterie.t.sub[1]
+}	
+
 /********************************* Predicats *********************************/
 
 /** 
@@ -108,7 +211,7 @@ pred coordonneesEgales[c0,c1 : Coordonnees]
 pred initInstances
 {
 	one Entrepot
-	#Drone = 3 			// DNB
+	#Drone = 1		// DNB
 	#Receptacle = 5	// RNB
 }
 
@@ -153,7 +256,7 @@ pred coordonneesEntrepot
   */
 pred coordonneesDrones
 {
-	no d0, d1 : Drone | (d0 != d1  && d0.coordonnees = d1.coordonnees && (no e0 : Entrepot | d0.coordonnees = e0.coordonnees))
+//	no d0, d1 : Drone | (d0 != d1  && d0.coordonnees = d1.coordonnees && (no e0 : Entrepot | d0.coordonnees = e0.coordonnees))
 }
 
 /** 
@@ -169,20 +272,25 @@ pred positionVoisin[c0, c1 : Coordonnees]
   */
 pred receptaclesVoisins
 {
-  // Decommenter la ligne ci-dessous pour forcer plusieurs chemins en sortie de l'entrepot
+	// Decommenter la ligne ci-dessous pour forcer plusieurs chemins en sortie de l'entrepot
 	// all e0 : Entrepot | #e0.receptaclesVoisins > 1
 
 	// Associe des receptacles voisins aux entrepots
-	all e0 : Entrepot, r0 : e0.receptaclesVoisinsEntrepot | e0.coordonnees.positionVoisin[r0.coordonnees] 
+	all e : Entrepot, r : Receptacle 
+		| (r.coordonnees.positionVoisin[e.coordonnees] <=> r in e.receptaclesVoisinsEntrepot)
 
 	// Empeche un receptacle d'etre son propre voisin
-	all r0 : Receptacle | !(r0 in r0.receptaclesVoisins)
+	all r0 : Receptacle 
+		| !(r0 in r0.receptaclesVoisins)
 
 	// Associe pour chaque receptacle ses receptacles voisins
-	all r0 : Receptacle, r1 : r0.receptaclesVoisins | r0.coordonnees.positionVoisin[r1.coordonnees] && r0 in r1.receptaclesVoisins
+	all r0 : Receptacle, r1 : r0.receptaclesVoisins 
+		| r0.coordonnees.positionVoisin[r1.coordonnees] && r0 in r1.receptaclesVoisins
 
 	// Verifie que chaque receptacle soit accessible depuis les entrepots
-	all e0 : Entrepot, r0 : Receptacle | some r1 : e0.receptaclesVoisinsEntrepot | r0 in r1.*receptaclesVoisins
+	all e0 : Entrepot, r0 : Receptacle 
+		| some r1 : e0.receptaclesVoisinsEntrepot 
+			| r0 in r1.*receptaclesVoisins
 }
 
 /*
@@ -243,4 +351,5 @@ pred go
 {
 }
 
-run go for 8 but 6 int
+run go for 10 but 1 Drone, 6 Receptacle, 5 Time, 1 Commande, 6 int
+
