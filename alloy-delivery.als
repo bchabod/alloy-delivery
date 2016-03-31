@@ -151,8 +151,8 @@ pred init [t: Time]
 	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
 	// TODO : vérifier cette ligne, elle me parait extremement louche et fumeuse.
 	// /!\/!\ 
-	all d: Drone, e: Entrepot | d.receptacleCible.t.coordonnees.positionVoisin[e.coordonnees]
-	
+	all d: Drone, e: Entrepot | one r:Receptacle | d.receptacleCible.t = r && r.coordonnees.positionVoisin[e.coordonnees]
+
 	// Initialise la batterie au max
 	all d: Drone | d.batterie.t = 3
 
