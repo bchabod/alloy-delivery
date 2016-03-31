@@ -190,6 +190,7 @@ pred deplacerDrone [t, t': Time, drone: Drone]
 	// Précondition
 	//drone.commande.coordonnees != drone.coordonnees.t	
 
+	// TODO : si commande on se dirige vers elle, sinon retour entrepot
 	// On regarde si le receptacle cible change.
 	drone.coordonnees.t = drone.receptacleCible.t.coordonnees => {
 		// On ajoute le réceptacle au chemin parcouru
@@ -217,14 +218,12 @@ pred deplacerDrone [t, t': Time, drone: Drone]
 
 /**
  * Opération : Livrer une commande
- * Précondition : 
+ * Précondition : Batterie non pleine (on vient d'arriver), ie < 3 && Sur les coordonnees de livraison
  */
 pred livrer [t, t': Time, drone: Drone] 
 {
-	// TODO
-
 	// Précondition
-	drone.coordonnees.t = drone.commande.coordonneesLivraison
+	drone.coordonnees.t = drone.commande.coordonneesLivraison && drone.batterie.t < 3
 
 	// Nouvelles valeurs
 	drone.coordonnees.t' = drone.coordonnees.t
