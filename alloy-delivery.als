@@ -30,7 +30,7 @@ sig Drone
     coordonnees : Coordonnees one -> Time,
 	batterie : Int one -> Time,
 	commande : lone Commande,
-	receptacleCible : lone Receptacle -> Time,
+	receptacleCible : Receptacle lone -> Time,
 //	capaciteMax : Int, 
 //	contenanceActuel : Int,
 	cheminTraverse : Chemin one -> Time
@@ -130,8 +130,10 @@ fact initCapacites
 fact traces 
 {
 	init [to/first]
-	all t: Time - to/last | 
-		let t' = t.next | all drone: Drone | deplacerDrone[t, t', drone]
+	all t: Time - to/last 
+		| let t' = t.next 
+			| all drone: Drone 
+				| rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
 }
 
 /**
@@ -149,7 +151,7 @@ pred init [t: Time]
 	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
 	// TODO : vérifier cette ligne, elle me parait extremement louche et fumeuse.
 	// /!\/!\ 
-	all d: Drone, e: Entrepot | d.receptacleCible.coordonnees.positionVoisin[e.coordonnees]
+	all d: Drone, e: Entrepot | d.receptacleCible.t.coordonnees.positionVoisin[e.coordonnees]
 	
 	// Initialise la batterie au max
 	all d: Drone | d.batterie.t = 3
@@ -163,37 +165,75 @@ pred init [t: Time]
 }
 
 /**
+ * Opération : Recharge de batterie
+ * Précondition : Drone sur son réceptacle cible et possède une batterie < 3 (non pleine)
+ */
+pred rechargerBatterie [t, t': Time, drone: Drone] 
+{
+	// Précondition
+	drone.coordonnees.t = drone.receptacleCible.t.coordonnees && drone.batterie.t < 3
+
+	// Nouvelles valeurs
+	drone.coordonnees.t' = drone.coordonnees.t
+	drone.receptacleCible.t' = drone.receptacleCible.t
+	drone.cheminTraverse.t' = drone.cheminTraverse.t
+
+	drone.batterie.t' = drone.batterie.t.add[1]
+}
+
+/**
  * Opération : Déplacement de drone
  * Précondition : 
  */
 pred deplacerDrone [t, t': Time, drone: Drone] 
 {
-	// TODO : Mais pourquoi faire sauter la précondition ? Chaque opération devra avoir sa précondition
 	// Précondition
 	//drone.commande.coordonnees != drone.coordonnees.t	
 
-	// TODO : Vérifier cette opération, éléments forts suspects
+	// On regarde si le receptacle cible change.
+	drone.coordonnees.t = drone.receptacleCible.t.coordonnees => {
+		// On ajoute le réceptacle au chemin parcouru
+		one c: Chemin | c.receptaclesVisites = drone.cheminTraverse.t.receptaclesVisites + drone.receptacleCible.t && drone.cheminTraverse.t' = c
+		// Le receptacle cible change
+		some r: Receptacle | r.coordonnees.positionVoisin[drone.coordonnees.t] && r not in drone.cheminTraverse.t'.receptaclesVisites && drone.receptacleCible.t' = r
+	} else {
+		// On garde le même réceptacle cible
+		drone.receptacleCible.t' = drone.receptacleCible.t
+		// On garde le même chemin
+		drone.cheminTraverse.t' = drone.cheminTraverse.t
+	}
 
-   //normalement la première condition est déjà vérifiée
-	drone.coordonnees.t.positionVoisin[drone.receptacleCible.coordonnees] 
- && !(drone.receptacleCible in drone.cheminTraverse.t.receptaclesVisites)
- &&
-(
-	(drone.receptacleCible.coordonnees.x > drone.coordonnees.t.x && drone.coordonnees.t'.x = drone.coordonnees.t.x.add[1] && drone.coordonnees.t'.y = drone.coordonnees.t.y)
-||(drone.receptacleCible.coordonnees.x < drone.coordonnees.t.x && drone.coordonnees.t'.x = drone.coordonnees.t.x.sub[1] && drone.coordonnees.t'.y = drone.coordonnees.t.y)
-||(drone.receptacleCible.coordonnees.y > drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.add[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
-||(drone.receptacleCible.coordonnees.y < drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.sub[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
-)
-
-	//si un drone est sur son réceptacle cible, on l'ajoute au chemin, et on prend le prochain
-	(drone.coordonnees.t = drone.receptacleCible.coordonnees) <=> (drone.receptacleCible in drone.cheminTraverse.t'.receptaclesVisites)
-
-	// TODO : C'est quoi cette téléportation ?
-    	some c: drone.coordonnees.t' , r:Receptacle | c = r.coordonnees
+	// On se dirige vers le receptacle cible a l'instant t'
+	(
+		(drone.receptacleCible.t'.coordonnees.x > drone.coordonnees.t.x && drone.coordonnees.t'.x = drone.coordonnees.t.x.add[1] && drone.coordonnees.t'.y = drone.coordonnees.t.y)
+  	 || (drone.receptacleCible.t'.coordonnees.x < drone.coordonnees.t.x && drone.coordonnees.t'.x = drone.coordonnees.t.x.sub[1] && drone.coordonnees.t'.y = drone.coordonnees.t.y)
+     || (drone.receptacleCible.t'.coordonnees.y > drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.add[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
+     || (drone.receptacleCible.t'.coordonnees.y < drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.sub[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
+	)
 
 	// Diminution de la batterie
 	drone.batterie.t' = drone.batterie.t.sub[1]
 }	
+
+/**
+ * Opération : Livrer une commande
+ * Précondition : 
+ */
+pred livrer [t, t': Time, drone: Drone] 
+{
+	// TODO
+
+	// Précondition
+	drone.coordonnees.t = drone.commande.coordonneesLivraison
+
+	// Nouvelles valeurs
+	drone.coordonnees.t' = drone.coordonnees.t
+	drone.receptacleCible.t' = drone.receptacleCible.t
+	drone.cheminTraverse.t' = drone.cheminTraverse.t
+	drone.batterie.t' = drone.batterie.t
+
+	// TODO : Mettre commande à 0 -> commande doit dépendre du temps aussi !
+}
 
 /********************************* Predicats *********************************/
 
@@ -318,9 +358,11 @@ pred batterieDrones
  */
 assert assertCoordonneesDrones 
 {
+/*
 	no d0 : Drone | 
 			(no e0 : Entrepot | e0.coordonnees = d0.coordonnees) 
  	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees = d1.coordonnees)
+*/
 }
 
 check assertCoordonneesDrones for 10 but 6 int
