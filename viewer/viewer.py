@@ -107,6 +107,7 @@ class MainWindow(QtGui.QWidget):
         label_time = QLabel("Time step : ")
         self.time_control = spinBox(0,10,0,0,True,1)
         self.time_control.valueChanged.connect(self.myscene.updateScene)
+        self.time_control.setDisabled(True)
         label_import = QLabel("Importer un fichier Alloy : ")
         self.open = QPushButton('Parcourir...', self)
         self.open.clicked.connect(self.handleOpen)
@@ -145,8 +146,8 @@ class MainWindow(QtGui.QWidget):
             xval = xtuple[1].get("label")
             self.coordinates[xkey]['x'] = int(xval)
         for ytuple in tree.findall(".//field[@label='y']/tuple"):
-            ykey = xtuple[0].get("label")
-            yval = xtuple[1].get("label")
+            ykey = ytuple[0].get("label")
+            yval = ytuple[1].get("label")
             self.coordinates[ykey]['y'] = int(yval)
 
         #Get number of time steps
@@ -177,6 +178,7 @@ class MainWindow(QtGui.QWidget):
                 })
 
         self.myscene.updateScene()
+        self.time_control.setDisabled(False)
 
     def center(self):
         resolution = QtGui.QDesktopWidget().screenGeometry()
