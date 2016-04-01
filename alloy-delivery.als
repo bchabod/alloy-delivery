@@ -357,14 +357,12 @@ pred batterieDrones
  */
 assert assertCoordonneesDrones 
 {
-/*
-	no d0 : Drone | 
-			(no e0 : Entrepot | e0.coordonnees = d0.coordonnees) 
- 	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees = d1.coordonnees)
-*/
+	no d0 : Drone, t : Time |
+		(no e : Entrepot | e.coordonnees = d0.coordonnees.t) 
+ 	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees.t = d1.coordonnees.t)
 }
 
-check assertCoordonneesDrones for 10 but 6 int
+check assertCoordonneesDrones for 15  but 3 Drone, 6 Receptacle, 5 Time, 4 Commande, 6 int
 
 /**
  * Verifie la tolerance d'un cas particulier : 2 receptacles sont voisins d'un
