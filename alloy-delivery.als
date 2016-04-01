@@ -149,8 +149,6 @@ pred init [t: Time]
 	all d: Drone | #d.commande = 1
 	
 	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
-	// TODO : vérifier cette ligne, elle me parait extremement louche et fumeuse.
-	// /!\/!\ 
 	all d: Drone, e: Entrepot | one r:Receptacle | d.receptacleCible.t = r && r.coordonnees.positionVoisin[e.coordonnees]
 
 	// Initialise la batterie au max
@@ -271,8 +269,8 @@ pred predCoordonnees
 pred coordonneesUniques
 {
 	no c0, c1 : Coordonnees | (c0 != c1 && c1.coordonneesEgales[c0])
+	//all c0 : Coordonnees | c0.x > -8 && c0.x < 8 && c0.y > -8 && c0.y < 8
 }
-
 /** 
   * Verifie que les receptacles soient sur des coordonnees differentes
   */
@@ -312,7 +310,7 @@ pred positionVoisin[c0, c1 : Coordonnees]
 pred receptaclesVoisins
 {
 	// Decommenter la ligne ci-dessous pour forcer plusieurs chemins en sortie de l'entrepot
-	// all e0 : Entrepot | #e0.receptaclesVoisins > 1
+	//all e0 : Entrepot | #e0.receptaclesVoisins = 2
 
 	// Associe des receptacles voisins aux entrepots
 	all e : Entrepot, r : Receptacle 
@@ -323,11 +321,10 @@ pred receptaclesVoisins
 		| !(r0 in r0.receptaclesVoisins)
 
 	// Associe pour chaque receptacle ses receptacles voisins
-	all r0 : Receptacle, r1 : r0.receptaclesVoisins 
-		| r0.coordonnees.positionVoisin[r1.coordonnees] && r0 in r1.receptaclesVoisins
+	all r0: Receptacle | all r1 : r0.receptaclesVoisins | r1.coordonnees.positionVoisin[r0.coordonnees] && r0 in r1.receptaclesVoisins
 
 	// Verifie que chaque receptacle soit accessible depuis les entrepots
-	all e0 : Entrepot, r0 : Receptacle 
+    all e0 : Entrepot, r0 : Receptacle 
 		| some r1 : e0.receptaclesVoisinsEntrepot 
 			| r0 in r1.*receptaclesVoisins
 }
@@ -378,8 +375,15 @@ assert assertReceptablesVoisinsEntrepotMaisPasEntreEux
 	   e0.coordonnees.positionVoisin[r0.coordonnees] &&
 	   e0.coordonnees.positionVoisin[r1.coordonnees]
 }
-
 check assertReceptablesVoisinsEntrepotMaisPasEntreEux for 8 but 6 int
+
+//mise en évidence que ça ne marche pas pour le moment
+assert receptacleVoisinSontVoisins
+{
+	all r:Receptacle | r.receptaclesVoisins.coordonnees.positionVoisin[r.coordonnees]
+}
+
+check receptacleVoisinSontVoisins for 7 but 6 int
 
 /********************************* Lancements *********************************/
 
