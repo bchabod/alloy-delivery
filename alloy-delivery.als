@@ -138,9 +138,9 @@ fact traces
 	all t: Time - to/last 
 		| let t' = t.next 
 			| all drone: Drone 
-				|  (rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone]) => {} else { skip[t, t', drone] }
+				|  (rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone] || skip[t, t', drone])
 //rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
-	all drone: Drone | #drone.commande.to/last = 0
+	all drone: Drone | #drone.commande.to/last = 0 && some e:Entrepot | drone.coordonnees.to/last = e.coordonnees
 }
 
 /**
@@ -467,11 +467,11 @@ pred go
 	one e : Entrepot | e.coordonnees.x = 0 && e.coordonnees.y = 0
 
 	// Une commande rapprochee
-	one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 && c.coordonneesLivraison.y = 1 && c.coordonneesLivraison = r.coordonnees
+	//one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 && c.coordonneesLivraison.y = 2 && c.coordonneesLivraison = r.coordonnees
 
 	// Limite sur la taille de la carte
 	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
 }
 
-run go for 10 but 1 Drone, 5 Receptacle, 7 Time, 1 Commande, 6 int, 1 Entrepot
+run go for 10 but 1 Drone, 5 Receptacle, 8 Time, 1 Commande, 6 int, 1 Entrepot
 
