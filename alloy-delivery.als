@@ -194,7 +194,9 @@ pred rechargerBatterie [t, t': Time, drone: Drone]
 
 /**
  * Opération : Déplacement de drone
- * Précondition : 
+ * Précondition : Possède une commande, n'est pas sur la livraison et :
+ *	- Soit le drone se situe sur la cible mais avec une batterie pleine (si non pleine il doit se recharger)
+ *  - Soit le drone ne se situe pas sur la cible
  */
 pred deplacerDroneVersCommande [t, t': Time, drone: Drone] 
 {
@@ -291,7 +293,7 @@ pred skip [t, t': Time, drone: Drone]
 
 /**
  * Opération : Livrer une commande
- * Précondition : Batterie non pleine (on vient d'arriver), ie < 3 && Sur les coordonnees de livraison
+ * Précondition : Batterie pleine (= 3) && Sur les coordonnees de livraison && Presence d'une commande
  */
 pred livrer [t, t': Time, drone: Drone] 
 {
@@ -443,7 +445,7 @@ assert assertCoordonneesDrones
  	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees.t = d1.coordonnees.t)
 }
 
-check assertCoordonneesDrones for 15  but 3 Drone, 6 Receptacle, 4 Commande, 6 int
+check assertCoordonneesDrones for 15 but 3 Drone, 6 Receptacle, 4 Commande, 6 int, 10 Time
 
 /**
  * Verifie la tolerance d'un cas particulier : 2 receptacles sont voisins d'un
