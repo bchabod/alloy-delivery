@@ -116,7 +116,6 @@ fact invCoordonnees
 	predCoordonnees
 
 	receptaclesVoisins
-	//gestionCommandes
 }
 
 /*
@@ -152,11 +151,10 @@ pred init [t: Time]
 	all c:Commande | one e:Entrepot | c in e.commandes.t
 	
 	//une commande ne peut pas être partagée entre 2 drones 
-	//TODO: ce predicat fait que ca devient inconsistant
-   //all d0, d1: Drone | d0.commande.t != d1.commande.t
+    no d0, d1: Drone | (d1 != d0 && d0.commande.t = d1.commande.t)
 	
 	// Tous les drones se chargent d'une commande TODO : à vérifier
-	all d: Drone | #d.commande = 1
+	all d: Drone | #d.commande.t = 1
 	
 	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
 	all d: Drone, e: Entrepot | one r:Receptacle | d.receptacleCible.t = r && r.coordonnees.positionVoisin[e.coordonnees]
@@ -258,7 +256,7 @@ pred coordonneesEgales[c0,c1 : Coordonnees]
 pred initInstances
 {
 	one Entrepot
-	#Drone = 1		// DNB
+	#Drone = 2	// DNB
 	#Receptacle = 5	// RNB
 }
 
