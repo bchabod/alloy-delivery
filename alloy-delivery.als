@@ -445,7 +445,7 @@ assert assertCoordonneesDrones
  	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees.t = d1.coordonnees.t)
 }
 
-check assertCoordonneesDrones for 15 but 3 Drone, 6 Receptacle, 4 Commande, 6 int, 10 Time
+check assertCoordonneesDrones for 15 but 1 Entrepot, 2 Drone, 5 Receptacle, 4 Commande, 6 int, 10 Time
 
 /**
  * Verifie la tolerance d'un cas particulier : 2 receptacles sont voisins d'un
