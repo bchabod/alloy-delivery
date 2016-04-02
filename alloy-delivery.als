@@ -15,10 +15,11 @@ sig Time
  * Attributs :
  *    receptaclesVisites : ensemble (0..*) des réceptacles qui ont déjà été parcourus
  */
+/*
 sig Chemin
 {
 	receptaclesVisites : set Receptacle
-}
+}*
 
 /**
  * Signature de l'objet Drone
@@ -29,11 +30,11 @@ sig Drone
 {
     coordonnees : Coordonnees one -> Time,
 	batterie : Int one -> Time,
-	commande : lone Commande,
+	commande : Commande lone -> Time,
 	receptacleCible : Receptacle lone -> Time,
 //	capaciteMax : Int, 
 //	contenanceActuel : Int,
-	cheminTraverse : Chemin one -> Time
+	receptaclesVisites : Receptacle set -> Time
 }
 
 /**
@@ -133,7 +134,9 @@ fact traces
 	all t: Time - to/last 
 		| let t' = t.next 
 			| all drone: Drone 
-				| rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
+				|  (rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone])// => {} else { skip[t, t', drone] }
+//rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
+	all drone: Drone | #drone.commande.to/last = 0
 }
 
 /**
@@ -146,7 +149,7 @@ pred init [t: Time]
 
 	// TODO : une commande ne peut etre partagee par plusieurs drones
 	// Tous les drones se chargent d'une commande TODO : à vérifier
-	all d: Drone | #d.commande = 1
+	all d: Drone | #d.commande.t = 1
 	
 	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
 	all d: Drone, e: Entrepot | one r:Receptacle | d.receptacleCible.t = r && r.coordonnees.positionVoisin[e.coordonnees]
@@ -155,11 +158,14 @@ pred init [t: Time]
 	all d: Drone | d.batterie.t = 3
 
 	// Les chemins sont nuls pour les drones à T0
-	all d: Drone | #d.cheminTraverse.t.receptaclesVisites = 0
+	all d: Drone | #d.receptaclesVisites.t = 0
 	
 	// TODO : peut être mettre ailleurs, à voir
 	// Les chemins appartiennent seulement aux drones
-	all c: Chemin | some d: Drone | d.cheminTraverse.t = c
+	//all c: Chemin | some d: Drone | d.cheminTraverse.t = c
+
+	one e: Entrepot | e.coordonnees.x = 0 && e.coordonnees.y = 0
+	one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 && c.coordonneesLivraison.y = 1 && c.coordonneesLivraison = r.coordonnees
 }
 
 /**
@@ -174,8 +180,8 @@ pred rechargerBatterie [t, t': Time, drone: Drone]
 	// Nouvelles valeurs
 	drone.coordonnees.t' = drone.coordonnees.t
 	drone.receptacleCible.t' = drone.receptacleCible.t
-	drone.cheminTraverse.t' = drone.cheminTraverse.t
-
+	drone.receptaclesVisites.t' = drone.receptaclesVisites.t
+	drone.commande.t' = drone.commande.t
 	drone.batterie.t' = drone.batterie.t.add[1]
 }
 
@@ -183,23 +189,25 @@ pred rechargerBatterie [t, t': Time, drone: Drone]
  * Opération : Déplacement de drone
  * Précondition : 
  */
-pred deplacerDrone [t, t': Time, drone: Drone] 
+pred deplacerDroneVersCommande [t, t': Time, drone: Drone] 
 {
 	// Précondition
-	//drone.commande.coordonnees != drone.coordonnees.t	
+	((drone.coordonnees.t = drone.receptacleCible.t.coordonnees && drone.batterie.t = 3) || (drone.coordonnees.t != drone.receptacleCible.t.coordonnees))
+	#drone.commande.t = 1 && drone.commande.t.coordonneesLivraison != drone.coordonnees.t	
 
 	// TODO : si commande on se dirige vers elle, sinon retour entrepot
 	// On regarde si le receptacle cible change.
 	drone.coordonnees.t = drone.receptacleCible.t.coordonnees => {
 		// On ajoute le réceptacle au chemin parcouru
-		one c: Chemin | c.receptaclesVisites = drone.cheminTraverse.t.receptaclesVisites + drone.receptacleCible.t && drone.cheminTraverse.t' = c
+		drone.receptaclesVisites.t' = drone.receptaclesVisites.t + drone.receptacleCible.t
 		// Le receptacle cible change
-		some r: Receptacle | r.coordonnees.positionVoisin[drone.coordonnees.t] && r not in drone.cheminTraverse.t'.receptaclesVisites && drone.receptacleCible.t' = r
+		some r: Receptacle 
+			| r.coordonnees.positionVoisin[drone.coordonnees.t] && r not in drone.receptaclesVisites.t && drone.receptacleCible.t' = r
 	} else {
 		// On garde le même réceptacle cible
 		drone.receptacleCible.t' = drone.receptacleCible.t
 		// On garde le même chemin
-		drone.cheminTraverse.t' = drone.cheminTraverse.t
+		drone.receptaclesVisites.t' = drone.receptaclesVisites.t
 	}
 
 	// On se dirige vers le receptacle cible a l'instant t'
@@ -212,7 +220,33 @@ pred deplacerDrone [t, t': Time, drone: Drone]
 
 	// Diminution de la batterie
 	drone.batterie.t' = drone.batterie.t.sub[1]
+
+	drone.commande.t' = drone.commande.t
 }	
+
+
+pred  deplacerDroneVersEntrepot [t, t': Time, drone: Drone] 
+{
+	// Prédicat
+	#drone.commande.t = 0
+
+	// Nouvelles valeurs
+	some e: Entrepot | drone.coordonnees.t' = e.coordonnees
+	drone.receptacleCible.t' = drone.receptacleCible.t
+	drone.receptaclesVisites.t' = drone.receptaclesVisites.t
+	drone.commande.t' = drone.commande.t
+	drone.batterie.t' = drone.batterie.t
+}
+
+pred skip [t, t': Time, drone: Drone] 
+{
+	// Nouvelles valeurs
+	drone.coordonnees.t' = drone.coordonnees.t
+	drone.receptacleCible.t' = drone.receptacleCible.t
+	drone.receptaclesVisites.t' = drone.receptaclesVisites.t
+	drone.commande.t' = drone.commande.t
+	drone.batterie.t' = drone.batterie.t
+}
 
 /**
  * Opération : Livrer une commande
@@ -221,15 +255,16 @@ pred deplacerDrone [t, t': Time, drone: Drone]
 pred livrer [t, t': Time, drone: Drone] 
 {
 	// Précondition
-	drone.coordonnees.t = drone.commande.coordonneesLivraison && drone.batterie.t < 3
+	#drone.commande.t = 1 && drone.coordonnees.t = drone.commande.t.coordonneesLivraison && drone.batterie.t = 3
 
 	// Nouvelles valeurs
 	drone.coordonnees.t' = drone.coordonnees.t
 	drone.receptacleCible.t' = drone.receptacleCible.t
-	drone.cheminTraverse.t' = drone.cheminTraverse.t
+	drone.receptaclesVisites.t' = drone.receptaclesVisites.t
 	drone.batterie.t' = drone.batterie.t
 
 	// TODO : Mettre commande à 0 -> commande doit dépendre du temps aussi !
+	#drone.commande.t' = 0
 }
 
 /********************************* Predicats *********************************/
@@ -393,7 +428,8 @@ check receptacleVoisinSontVoisins for 7 but 6 int
  */ 
 pred go
 {
+	
 }
 
-run go for 10 but 1 Drone, 6 Receptacle, 5 Time, 1 Commande, 6 int
+run go for 10 but 1 Drone, 6 Receptacle, 10 Time, 1 Commande, 6 int
 
