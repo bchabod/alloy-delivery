@@ -33,6 +33,7 @@ class Scene(QtGui.QGraphicsScene):
         QtGui.QGraphicsScene.__init__(self)
         self.mainWindow = windowParam
         self.droneMap = QtGui.QPixmap("ship.png")
+        self.batteryMap = [QtGui.QPixmap("level0.png"),QtGui.QPixmap("level1.png"),QtGui.QPixmap("level2.png"),QtGui.QPixmap("level3.png")]
 
     def fill(self):
         self.setSceneRect(-SCALE*2,-SCALE*2,SCALE*4,SCALE*4)
@@ -124,6 +125,7 @@ class Scene(QtGui.QGraphicsScene):
             for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
                 if drone["ckey"]==ckey:
                     counter = counter + 1
+                    lastDrone = drone
             if counter>1:
                 rect = QRectF(QPointF(0,0), QPointF(0.25, 0.25))
                 rect.moveCenter(QPointF(cobj["x"] + radius/4, cobj["y"] - radius/4))
@@ -133,6 +135,11 @@ class Scene(QtGui.QGraphicsScene):
                 label.scale(0.01, 0.01)
                 label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
                     rect.top() + (0.1) - label.sceneBoundingRect().height()/2)
+            elif counter==1:
+                b = self.addPixmap(self.batteryMap[lastDrone["battery"]])
+                b.scale(DRONE_SCALE/2, DRONE_SCALE/2)
+                b.setOffset(-self.batteryMap[lastDrone["battery"]].width()/2,-self.batteryMap[lastDrone["battery"]].height()/2)
+                b.setPos(cobj["x"], cobj["y"])
 
 class View(QtGui.QGraphicsView):
     def __init__(self):
@@ -238,9 +245,17 @@ class MainWindow(QtGui.QWidget):
         for t in tree.findall(".//field[@label='coordonnees']/tuple"):
             label = t[0].get("label")
             if(label.startswith("Drone")):
+
+                #Find battery level for this timestamp
+                bLevel = 3
+                for b in tree.findall(".//field[@label='batterie']/tuple"):
+                    if(b[0].get("label")==label and b[2].get("label")==t[2].get("label")):
+                        bLevel = int(b[1].get("label"))
+
                 self.drones[int(t[2].get("label")[5])].append({
                     'label' : label,
-                    'ckey' : t[1].get("label")
+                    'ckey' : t[1].get("label"),
+                    'battery' : bLevel
                 })
             elif(label.startswith("Receptacle") or label.startswith("Entrepot")):
                 self.receptacles.append({
