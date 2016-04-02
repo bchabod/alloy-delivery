@@ -6,14 +6,14 @@ import xml.etree.ElementTree as etree
 
 COLORS = {
     "BLACK" : QColor(0,0,0),
-    "RED" : QColor(255,0,0),
+    "RED" : QColor(255,120,120),
     "GREY" : QColor(220,220,220),
     "DRONE" : QColor(25,120,200,150),
     "ENTREPOT" : QColor(200,40,25,120),
     "RECEPTACLE" : QColor(25,200,60,120)
 }
 
-SCALE = 20
+SCALE = 10
 DRONE_SCALE = 0.005
 
 class Scene(QtGui.QGraphicsScene):
@@ -23,7 +23,7 @@ class Scene(QtGui.QGraphicsScene):
         self.droneMap = QtGui.QPixmap("ship.png")
 
     def fill(self):
-        self.setSceneRect(-SCALE*4,-SCALE*4,SCALE*8,SCALE*8)
+        self.setSceneRect(-SCALE*2,-SCALE*2,SCALE*4,SCALE*4)
 
         #Ajout d'une grille en fond
         axis_x = self.addLine(-SCALE,0,SCALE,0,QtGui.QPen(COLORS["RED"]))
@@ -99,7 +99,7 @@ class MainWindow(QtGui.QWidget):
         self.myscene = Scene(self)
         self.myscene.fill()
         graphics.setScene(self.myscene)
-        graphics.fitInView(0,0,10,7.5)
+        graphics.fitInView(0,0,10/3,7.25/3)
         graphics.centerOn(0,0)
         vbox.addWidget(graphics)
         graphics.setFixedSize(800, 800)
