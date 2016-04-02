@@ -1,5 +1,6 @@
 open util/integer
 open util/ordering[Time] as to
+open util/boolean
 
 /********************************* Signatures *********************************/
 
@@ -9,17 +10,6 @@ open util/ordering[Time] as to
 sig Time
 {
 }
-
-/**
- * Signature de l'objet Chemin
- * Attributs :
- *    receptaclesVisites : ensemble (0..*) des réceptacles qui ont déjà été parcourus
- */
-/*
-sig Chemin
-{
-	receptaclesVisites : set Receptacle
-}*
 
 /**
  * Signature de l'objet Drone
@@ -61,9 +51,7 @@ sig Entrepot
 {
 	coordonnees : Coordonnees,
 	receptaclesVoisinsEntrepot : some Receptacle,
-
-	//la liste de Commande évolue au fil du temps
-	commandes:  Commande some -> Time,
+	commandes: some Commande
 }
 
 /**
@@ -87,6 +75,7 @@ sig Commande
 {
 	coordonneesLivraison : Coordonnees,
 //	contenanceActuelle: Int
+	affectee : Bool one -> Time
 }
 /********************************* Fonctions *********************************/
 
@@ -133,13 +122,23 @@ fact initCapacites
  */
 fact traces 
 {
+	// Post-Condition du programme
 	init [to/first]
+
+	// Execution
 	all t: Time - to/last 
 		| let t' = t.next 
 			| all drone: Drone 
-				|  (rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone] || skip[t, t', drone])
-//rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
+				|  (charger[t, t', drone] || rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone] || skip[t, t', drone])
+
+	all t: Time - to/last 
+		| let t' = t.next 
+			| all c: Commande
+				| majCommande[t, t', c]
+
+	// Post-Condition du programme
 	all drone: Drone | #drone.commande.to/last = 0 && some e:Entrepot | drone.coordonnees.to/last = e.coordonnees
+	all c: Commande | c.affectee.to/last = {True}
 }
 
 /**
@@ -150,29 +149,43 @@ pred init [t: Time]
 	// Tous les drones sont sur un entrepot
 	all d: Drone | some e: Entrepot | d.coordonnees.t = e.coordonnees
 
-	//toutes les commandes sont a l'entrepot
-	all c:Commande | one e:Entrepot | c in e.commandes.t
-	
-	//une commande ne peut pas être partagée entre 2 drones 
-    no d0, d1: Drone | (d1 != d0 && d0.commande.t = d1.commande.t)
-	
-	// Tous les drones se chargent d'une commande TODO : à vérifier
-	all d: Drone | #d.commande.t = 1
-	
-	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
-	all d: Drone, e: Entrepot | one r:Receptacle | d.coordonneesCible.t = r.coordonnees && r.coordonnees.positionVoisin[e.coordonnees]
+	// Toutes les commandes appartiennent a l'entrepot
+	all c:Commande | one e:Entrepot | c in e.commandes
 
+	// Pas de commande à prendre en charge en début
+	all d: Drone | #d.commande.t = 0 && #d.coordonneesCible.t = 0 && #d.coordReceptaclesVisites.t = 0
+
+	// Toutes les commandes sont non affectées
+	all c: Commande | c.affectee.t = {False}
+	
 	// Initialise la batterie au max
 	all d: Drone | d.batterie.t = 3
+}
 
-	// Les chemins sont nuls pour les drones à T0
-	all d: Drone | #d.coordReceptaclesVisites.t = 0
-	
-	// TODO : peut être mettre ailleurs, à voir
-	// Les chemins appartiennent seulement aux drones
-	//all c: Chemin | some d: Drone | d.cheminTraverse.t = c
+/**
+ * Opération : Charge une commande
+ * Précondition : Drone sur entrepot, sans commande, avec batterie pleine, avec presence de commandes à traiter
+ */
+pred charger [t, t': Time, drone: Drone] 
+{
+	// Précondition
+	(one e: Entrepot | drone.coordonnees.t = e.coordonnees && some c: e.commandes | c.affectee.t = {False}) && drone.batterie.t = 3 && #drone.commande.t = 0
 
+	// Affectation de la commande
+	some c: Commande, e: Entrepot | c in e.commandes && c.affectee.t = {False} && drone.commande.t' = c && c.affectee.t' = {True}
 
+	// Commande ne pouvant être partagée avec d'autres drones
+	no d: Drone | d != drone && d.commande.t' = drone.commande.t'
+
+	// Initialisation du réceptacle cible du drone au réceptacle le plus proche, qui est dans l'ilot de la commande
+	some r: Receptacle | drone.coordonneesCible.t' = r.coordonnees && r.coordonnees.positionVoisin[drone.coordonnees.t]
+
+	// Nouveau parcours à effectuer
+	#drone.coordReceptaclesVisites.t' = 0
+
+	// Nouvelles valeurs
+	drone.coordonnees.t' = drone.coordonnees.t
+	drone.batterie.t' = drone.batterie.t
 }
 
 /**
@@ -291,6 +304,14 @@ pred skip [t, t': Time, drone: Drone]
 	drone.batterie.t' = drone.batterie.t
 }
 
+pred majCommande [t, t' : Time, c : Commande] 
+{
+	(no d: Drone | d.commande.t' = c) => {
+		// On conserve la valeur affectee
+		c.affectee.t' = c.affectee.t
+	}
+}
+
 /**
  * Opération : Livrer une commande
  * Précondition : Batterie pleine (= 3) && Sur les coordonnees de livraison && Presence d'une commande
@@ -309,6 +330,8 @@ pred livrer [t, t': Time, drone: Drone]
 	// TODO : Mettre commande à 0 -> commande doit dépendre du temps aussi !
 	#drone.commande.t' = 0
 }
+
+
 
 /********************************* Predicats *********************************/
 
@@ -471,6 +494,28 @@ assert receptacleVoisinSontVoisins
 
 check receptacleVoisinSontVoisins for 7 but 6 int
 
+/**
+ * Vérification : Une commande ne peut avoir l'état "non affectée" et être reliée à un drone.
+ */
+assert assertCommandeEtatErrone
+{
+	no c : Commande, t : Time, d : Drone |
+		c.affectee.t = {False} && #d.commande.t = 1 && d.commande.t = c
+}
+
+check assertCommandeEtatErrone for 15 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot, 2 Commande
+
+/**
+ * Vérification : Deux drones ne peuvent partager une même commande à un instant T.
+ */
+assert assertCommandesPartagees
+{
+	no d0, d1 : Drone, t : Time |
+		d0 != d1 && #d0.commande.t = 1 && d0.commande.t = d1.commande.t
+}
+
+check assertCommandesPartagees for 15 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot, 2 Commande
+
 /********************************* Lancements *********************************/
 
 /**
@@ -488,5 +533,5 @@ pred go
 	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
 }
 
-run go for 10 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot
+run go for 15 but 1 Drone, 5 Receptacle, 6 int, 1 Entrepot, 1 Commande
 
