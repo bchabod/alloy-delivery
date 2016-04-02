@@ -224,6 +224,9 @@ pred deplacerDroneVersCommande [t, t': Time, drone: Drone]
      || (drone.coordonneesCible.t'.y < drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.sub[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
 	)
 
+	// On vérifie qu'un autre drone ne souhaite pas aller aux futures coordonnees, sauf s'il s'agit d'un entrepot
+	no d: Drone | d != drone && d.coordonnees.t' = drone.coordonnees.t' && no e: Entrepot | e.coordonnees = drone.coordonnees.t'
+
 	// Diminution de la batterie
 	drone.batterie.t' = drone.batterie.t.sub[1]
 
@@ -265,6 +268,9 @@ pred deplacerDroneVersEntrepot [t, t': Time, drone: Drone]
      || (drone.coordonneesCible.t'.y > drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.add[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
      || (drone.coordonneesCible.t'.y < drone.coordonnees.t.y && drone.coordonnees.t'.y = drone.coordonnees.t.y.sub[1] && drone.coordonnees.t'.x = drone.coordonnees.t.x)
 	)
+
+	// On vérifie qu'un autre drone ne souhaite pas aller aux futures coordonnees, sauf s'il s'agit d'un entrepot
+	no d: Drone | d != drone && d.coordonnees.t' = drone.coordonnees.t' && no e: Entrepot | e.coordonnees = drone.coordonnees.t'
 
 	// Diminution de la batterie
 	drone.batterie.t' = drone.batterie.t.sub[1]
@@ -331,6 +337,7 @@ pred predCoordonnees
 	coordonneesReceptacles
 	coordonneesEntrepot
 	coordonneesDrones
+	coordonneesCommandes
 }
 
 /** 
@@ -363,6 +370,14 @@ pred coordonneesEntrepot
 pred coordonneesDrones
 {
 //	no d0, d1 : Drone | (d0 != d1  && d0.coordonnees = d1.coordonnees && (no e0 : Entrepot | d0.coordonnees = e0.coordonnees))
+}
+
+/** 
+  * Verifie que les commandes sont sur des receptacles
+  */
+pred coordonneesCommandes
+{
+	all c: Commande | some r: Receptacle | c.coordonneesLivraison = r.coordonnees
 }
 
 /** 
@@ -428,7 +443,7 @@ assert assertCoordonneesDrones
  	 &&	(some d1 : Drone | d0 != d1 && d0.coordonnees.t = d1.coordonnees.t)
 }
 
-check assertCoordonneesDrones for 15  but 3 Drone, 6 Receptacle, 5 Time, 4 Commande, 6 int
+check assertCoordonneesDrones for 15  but 3 Drone, 6 Receptacle, 4 Commande, 6 int
 
 /**
  * Verifie la tolerance d'un cas particulier : 2 receptacles sont voisins d'un
