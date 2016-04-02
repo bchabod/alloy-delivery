@@ -309,7 +309,10 @@ pred majCommande [t, t' : Time, c : Commande]
 	(no d: Drone | d.commande.t' = c) => {
 		// On conserve la valeur affectee
 		c.affectee.t' = c.affectee.t
-	}
+	} else {
+		// La commande est affectée
+		c.affectee.t' = {True}
+	}		
 }
 
 /**
@@ -533,5 +536,5 @@ pred go
 	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
 }
 
-run go for 15 but 1 Drone, 5 Receptacle, 6 int, 1 Entrepot, 1 Commande
+run go for 15 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot, 2 Commande
 
