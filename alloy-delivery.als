@@ -60,7 +60,10 @@ sig Receptacle
 sig Entrepot
 {
 	coordonnees : Coordonnees,
-	receptaclesVoisinsEntrepot : some Receptacle
+	receptaclesVoisinsEntrepot : some Receptacle,
+
+	//la liste de Commande évolue au fil du temps
+	commandes:  Commande some -> Time,
 }
 
 /**
@@ -114,6 +117,7 @@ fact invCoordonnees
 	predCoordonnees
 
 	receptaclesVoisins
+	//gestionCommandes
 }
 
 /*
@@ -147,7 +151,13 @@ pred init [t: Time]
 	// Tous les drones sont sur un entrepot
 	all d: Drone | some e: Entrepot | d.coordonnees.t = e.coordonnees
 
-	// TODO : une commande ne peut etre partagee par plusieurs drones
+	//toutes les commandes sont a l'entrepot
+	all c:Commande | one e:Entrepot | c in e.commandes.t
+	
+	//une commande ne peut pas être partagée entre 2 drones 
+	//TODO: ce predicat fait que ca devient inconsistant
+   //all d0, d1: Drone | d0.commande.t != d1.commande.t
+	
 	// Tous les drones se chargent d'une commande TODO : à vérifier
 	all d: Drone | #d.commande.t = 1
 	
@@ -164,8 +174,7 @@ pred init [t: Time]
 	// Les chemins appartiennent seulement aux drones
 	//all c: Chemin | some d: Drone | d.cheminTraverse.t = c
 
-	one e: Entrepot | e.coordonnees.x = 0 && e.coordonnees.y = 0
-	one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 && c.coordonneesLivraison.y = 1 && c.coordonneesLivraison = r.coordonnees
+
 }
 
 /**
@@ -304,7 +313,6 @@ pred predCoordonnees
 pred coordonneesUniques
 {
 	no c0, c1 : Coordonnees | (c0 != c1 && c1.coordonneesEgales[c0])
-	all c0 : Coordonnees | c0.x > -8 && c0.x < 9 && c0.y > -8 && c0.y < 9
 }
 /** 
   * Verifie que les receptacles soient sur des coordonnees differentes
@@ -348,8 +356,6 @@ pred receptaclesVoisins
 	//all e0 : Entrepot | #e0.receptaclesVoisins = 2
 
 	// Associe des receptacles voisins aux entrepots
-	//all e : Entrepot, r : Receptacle 
-	//	| (r.coordonnees.positionVoisin[e.coordonnees] <=> r in e.receptaclesVoisinsEntrepot)
 	all e0 : Entrepot | all r0: e0.receptaclesVoisinsEntrepot | e0.coordonnees.positionVoisin[r0.coordonnees] 
 
 	// Empeche un receptacle d'etre son propre voisin
@@ -364,6 +370,7 @@ pred receptaclesVoisins
 		| some r1 : e0.receptaclesVoisinsEntrepot 
 			| r0 in r1.*receptaclesVoisins
 }
+
 
 /*
 pred capacitesReceptacles
@@ -428,7 +435,14 @@ check receptacleVoisinSontVoisins for 7 but 6 int
  */ 
 pred go
 {
-	
+	// Placement de l'entrepôt au centre de la carte
+	one e : Entrepot | e.coordonnees.x = 0 && e.coordonnees.y = 0
+
+	// Une commande rapprochee
+	one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 && c.coordonneesLivraison.y = 1 && c.coordonneesLivraison = r.coordonnees
+
+	// Limite sur la taille de la carte
+	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
 }
 
 run go for 10 but 1 Drone, 6 Receptacle, 10 Time, 1 Commande, 6 int
