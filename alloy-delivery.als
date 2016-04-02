@@ -313,7 +313,7 @@ pred receptaclesVoisins
 	//all e0 : Entrepot | #e0.receptaclesVoisins = 2
 
 	// Associe des receptacles voisins aux entrepots
-	all e : Entrepot, r : Receptacle 
+	all e : Entrepot | some r : Receptacle 
 		| (r.coordonnees.positionVoisin[e.coordonnees] <=> r in e.receptaclesVoisinsEntrepot)
 
 	// Empeche un receptacle d'etre son propre voisin
@@ -324,9 +324,10 @@ pred receptaclesVoisins
 	all r0: Receptacle | all r1 : r0.receptaclesVoisins | r1.coordonnees.positionVoisin[r0.coordonnees] && r0 in r1.receptaclesVoisins
 
 	// Verifie que chaque receptacle soit accessible depuis les entrepots
-    all e0 : Entrepot, r0 : Receptacle 
+    all e0 : Entrepot
 		| some r1 : e0.receptaclesVoisinsEntrepot 
-			| r0 in r1.*receptaclesVoisins
+			| all r0 : Receptacle 
+				| r0 in r1.*receptaclesVoisins
 }
 
 /*
