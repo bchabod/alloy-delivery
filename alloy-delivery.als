@@ -29,7 +29,7 @@ sig Drone
 {
     coordonnees : Coordonnees one -> Time,
 	batterie : Int one -> Time,
-	commande : lone Commande,
+	commande : Commande lone -> Time,
 	receptacleCible : Receptacle lone -> Time,
 //	capaciteMax : Int, 
 //	contenanceActuel : Int,
@@ -59,7 +59,10 @@ sig Receptacle
 sig Entrepot
 {
 	coordonnees : Coordonnees,
-	receptaclesVoisinsEntrepot : some Receptacle
+	receptaclesVoisinsEntrepot : some Receptacle,
+
+	//la liste de Commande évolue au fil du temps
+	commandes:  Commande some -> Time,
 }
 
 /**
@@ -113,6 +116,7 @@ fact invCoordonnees
 	predCoordonnees
 
 	receptaclesVoisins
+	//gestionCommandes
 }
 
 /*
@@ -144,7 +148,13 @@ pred init [t: Time]
 	// Tous les drones sont sur un entrepot
 	all d: Drone | some e: Entrepot | d.coordonnees.t = e.coordonnees
 
-	// TODO : une commande ne peut etre partagee par plusieurs drones
+	//toutes les commandes sont a l'entrepot
+	all c:Commande | one e:Entrepot | c in e.commandes.t
+	
+	//une commande ne peut pas être partagée entre 2 drones 
+	//TODO: ce predicat fait que ca devient inconsistant
+   //all d0, d1: Drone | d0.commande.t != d1.commande.t
+	
 	// Tous les drones se chargent d'une commande TODO : à vérifier
 	all d: Drone | #d.commande = 1
 	
@@ -221,7 +231,7 @@ pred deplacerDrone [t, t': Time, drone: Drone]
 pred livrer [t, t': Time, drone: Drone] 
 {
 	// Précondition
-	drone.coordonnees.t = drone.commande.coordonneesLivraison && drone.batterie.t < 3
+	drone.coordonnees.t = drone.commande.t.coordonneesLivraison && drone.batterie.t < 3
 
 	// Nouvelles valeurs
 	drone.coordonnees.t' = drone.coordonnees.t
@@ -313,8 +323,6 @@ pred receptaclesVoisins
 	//all e0 : Entrepot | #e0.receptaclesVoisins = 2
 
 	// Associe des receptacles voisins aux entrepots
-	//all e : Entrepot, r : Receptacle 
-	//	| (r.coordonnees.positionVoisin[e.coordonnees] <=> r in e.receptaclesVoisinsEntrepot)
 	all e0 : Entrepot | all r0: e0.receptaclesVoisinsEntrepot | e0.coordonnees.positionVoisin[r0.coordonnees] 
 
 	// Empeche un receptacle d'etre son propre voisin
@@ -329,6 +337,7 @@ pred receptaclesVoisins
 		| some r1 : e0.receptaclesVoisinsEntrepot 
 			| r0 in r1.*receptaclesVoisins
 }
+
 
 /*
 pred capacitesReceptacles
@@ -395,5 +404,5 @@ pred go
 {
 }
 
-run go for 10 but 1 Drone, 6 Receptacle, 5 Time, 1 Commande, 6 int
+run go for 10 but 2 Drone, 5 Receptacle, 5 Time, 2 Commande, 6 int
 
