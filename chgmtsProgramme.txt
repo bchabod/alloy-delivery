@@ -1,0 +1,13 @@
+assert receptacleVoisinSontVoisins
+{
+	all r:Receptacle | r.receptaclesVoisins.coordonnees.positionVoisin[r.coordonnees]
+}
+
+A permis de tester si tous les receptacles sont bien voisins. Ça n'était pas le cas au début car on avait le fact suivant :
+	all r0: Receptacle,r1 : r0.receptaclesVoisins | r1.coordonnees.positionVoisin[r0.coordonnees] <=> r0 in r1.receptaclesVoisins
+
+	Apparamment en faisant ainsi alloy ne testait pas toutes les possibilités (pas tous les receptaclesVoisins?)
+	
+	Nous avons donc changé en quelque chose de plus explicite:
+	
+	all r0: Receptacle | all r1 : r0.receptaclesVoisins | r1.coordonnees.positionVoisin[r0.coordonnees] && r0 in r1.receptaclesVoisins.
