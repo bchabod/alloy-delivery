@@ -318,7 +318,7 @@ pred coordonneesEgales[c0,c1 : Coordonnees]
 pred initInstances
 {
 	one Entrepot
-	#Drone = 1	// DNB
+	#Drone = 2	// DNB
 	#Receptacle = 5	// RNB
 }
 
@@ -471,5 +471,5 @@ pred go
 	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
 }
 
-run go for 10 but 1 Drone, 5 Receptacle, 8 Time, 1 Commande, 6 int, 1 Entrepot
+run go for 10 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot
 
