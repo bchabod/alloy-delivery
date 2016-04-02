@@ -269,7 +269,7 @@ pred predCoordonnees
 pred coordonneesUniques
 {
 	no c0, c1 : Coordonnees | (c0 != c1 && c1.coordonneesEgales[c0])
-	//all c0 : Coordonnees | c0.x > -8 && c0.x < 8 && c0.y > -8 && c0.y < 8
+	all c0 : Coordonnees | c0.x > -8 && c0.x < 9 && c0.y > -8 && c0.y < 9
 }
 /** 
   * Verifie que les receptacles soient sur des coordonnees differentes
