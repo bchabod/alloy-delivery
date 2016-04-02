@@ -69,7 +69,9 @@ class Scene(QtGui.QGraphicsScene):
 
         for ckey, d in self.mainWindow.commandes.items():
             coords = self.mainWindow.coordinates[ckey]
+            spot = QPointF(coords["x"], coords["y"])
             rect = QRectF()
+            line = QLineF()
             for far in range(2,5):
                 foundFreeSpot = False
                 for delta in delta_pos:
@@ -79,10 +81,18 @@ class Scene(QtGui.QGraphicsScene):
                     }
                     rect = QRectF(QPointF(0,0), QPointF(1, 0.5 * len(d)))
                     rect.moveCenter(QPointF(newcoords["x"], newcoords["y"]))
+                    line = QLineF(coords["x"], coords["y"], rect.center().x(), rect.center().y())
                     foundFreeSpot = True
                     items = self.items()
                     for i in items:
-                        if (not (isinstance(i, QGraphicsItemGroup))) and (rect.intersects(i.sceneBoundingRect())):
+                        r2 = i.sceneBoundingRect()
+                        if(r2.contains(spot) or isinstance(i, QGraphicsLineItem)):
+                            continue
+                        if (not (isinstance(i, QGraphicsItemGroup)) and ( (rect.intersects(r2)) or ( \
+                        line.intersect(QLineF(r2.topRight(), r2.topLeft()), QPointF())==QLineF.BoundedIntersection or \
+                        line.intersect(QLineF(r2.topRight(), r2.bottomRight()), QPointF())==QLineF.BoundedIntersection or \
+                        line.intersect(QLineF(r2.bottomLeft(), r2.topLeft()), QPointF())==QLineF.BoundedIntersection or \
+                        line.intersect(QLineF(r2.bottomRight(), r2.bottomLeft()), QPointF())==QLineF.BoundedIntersection ))):
                             foundFreeSpot = False
                             break
                     if(foundFreeSpot):
@@ -90,16 +100,15 @@ class Scene(QtGui.QGraphicsScene):
                 if(foundFreeSpot):
                     break
             if not foundFreeSpot:
-                print "WARNING: could not place label for commande, no free spot found"
-            else:
-                l = self.addLine(coords["x"], coords["y"], rect.center().x(), rect.center().y(), QtGui.QPen(COLORS["BLACK"]))
-                r = self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
-                font = QtGui.QFont("Georgia", 10);
-                for index in range(0, len(d)):
-                    label = self.addText(d[index]["label"].replace("Commande", "c") + " : " + d[index]["demande"], font)
-                    label.scale(0.015, 0.015)
-                    label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
-                        rect.top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
+                print "WARNING: could not place label for commande, dirty spot will be used"
+            l = self.addLine(line, QtGui.QPen(COLORS["BLACK"]))
+            r = self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
+            font = QtGui.QFont("Georgia", 10);
+            for index in range(0, len(d)):
+                label = self.addText(d[index]["label"].replace("Commande", "c") + " : " + d[index]["demande"], font)
+                label.scale(0.015, 0.015)
+                label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
+                    rect.top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
 
         for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
                 coords = self.mainWindow.coordinates[drone["ckey"]]
