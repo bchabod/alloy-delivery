@@ -318,7 +318,7 @@ pred coordonneesEgales[c0,c1 : Coordonnees]
 pred initInstances
 {
 	one Entrepot
-	#Drone = 2	// DNB
+	#Drone = 1	// DNB
 	#Receptacle = 5	// RNB
 }
 
