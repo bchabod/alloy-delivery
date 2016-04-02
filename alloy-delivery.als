@@ -269,7 +269,6 @@ pred predCoordonnees
 pred coordonneesUniques
 {
 	no c0, c1 : Coordonnees | (c0 != c1 && c1.coordonneesEgales[c0])
-	all c0 : Coordonnees | c0.x > -8 && c0.x < 9 && c0.y > -8 && c0.y < 9
 }
 /** 
   * Verifie que les receptacles soient sur des coordonnees differentes
@@ -393,7 +392,12 @@ check receptacleVoisinSontVoisins for 7 but 6 int
  */ 
 pred go
 {
+	// Placement de l'entrepôt au centre de la carte
+	one e : Entrepot | e.coordonnees.x = 0 && e.coordonnees.y = 0
+
+	// Limite sur la taille de la carte
+	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
 }
 
-run go for 10 but 1 Drone, 6 Receptacle, 5 Time, 1 Commande, 6 int
+run go for 10 but 1 Entrepot, 1 Drone, 5 Receptacle, 5 Time, 1 Commande, 6 int
 
