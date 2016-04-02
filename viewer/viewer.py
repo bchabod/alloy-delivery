@@ -8,13 +8,24 @@ COLORS = {
     "BLACK" : QColor(0,0,0),
     "RED" : QColor(255,120,120),
     "GREY" : QColor(220,220,220),
-    "DRONE" : QColor(25,120,200,150),
-    "ENTREPOT" : QColor(200,40,25,120),
-    "RECEPTACLE" : QColor(25,200,60,120)
+    "ENTREPOT" : QColor(200,40,25,140),
+    "RECEPTACLE" : QColor(25,200,60,140),
+    "COMMANDE" : QColor(255,255,102)
 }
 
 SCALE = 10
-DRONE_SCALE = 0.005
+DRONE_SCALE = 0.002
+
+delta_pos = [
+    [-1, 0],
+    [0, -1],
+    [1,  0],
+    [0,  1],
+    [-1,-1],
+    [1, -1],
+    [1,  1],
+    [-1, 1]
+]
 
 class Scene(QtGui.QGraphicsScene):
     def __init__(self, windowParam):
@@ -25,38 +36,77 @@ class Scene(QtGui.QGraphicsScene):
     def fill(self):
         self.setSceneRect(-SCALE*2,-SCALE*2,SCALE*4,SCALE*4)
 
+        self.gridGroup = QGraphicsItemGroup()
         #Ajout d'une grille en fond
         axis_x = self.addLine(-SCALE,0,SCALE,0,QtGui.QPen(COLORS["RED"]))
+        axis_x.setGroup(self.gridGroup)
         axis_y = self.addLine(0,-SCALE,0,SCALE,QtGui.QPen(COLORS["RED"]))
+        axis_y.setGroup(self.gridGroup)
         for i in range(-SCALE,SCALE):
             if(i!=0):
-                self.addLine(-SCALE,i,SCALE,i,QtGui.QPen(COLORS["GREY"]))
-                self.addLine(i,-SCALE,i,SCALE,QtGui.QPen(COLORS["GREY"]))
+                l = self.addLine(-SCALE,i,SCALE,i,QtGui.QPen(COLORS["GREY"]))
+                l.setGroup(self.gridGroup)
+                l = self.addLine(i,-SCALE,i,SCALE,QtGui.QPen(COLORS["GREY"]))
+                l.setGroup(self.gridGroup)
+        self.addItem(self.gridGroup)
 
     def updateScene(self):
         items = self.items()
         for i in items:
-            if not (isinstance(i, QGraphicsLineItem)):
+            if not (isinstance(i, QGraphicsItemGroup) or (isinstance(i, QGraphicsLineItem) and i.group() == self.gridGroup)):
                 self.removeItem(i)
-
-        for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
-            coords = self.mainWindow.coordinates[drone["ckey"]]
-            d = self.addPixmap(self.droneMap)
-            d.scale(DRONE_SCALE, DRONE_SCALE)
-            d.setOffset(-self.droneMap.width()/2,-self.droneMap.height()/2)
-            d.setPos(coords["x"], coords["y"])
 
         for r in self.mainWindow.receptacles:
             coords = self.mainWindow.coordinates[r["ckey"]]
-            radius = 2.0
-            el = self.addEllipse(0-radius/2, 0-radius/2, radius, radius, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["RECEPTACLE"]))
+            radius = 1.0
+            color = QBrush(COLORS["RECEPTACLE"]) if r["label"].startswith("Receptacle") else QBrush(COLORS["ENTREPOT"])
+            el = self.addEllipse(0-radius/2, 0-radius/2, radius, radius, QtGui.QPen(COLORS["BLACK"]), color)
             el.setPos(coords["x"], coords["y"])
-            
-        for e in self.mainWindow.entrepots:
-            coords = self.mainWindow.coordinates[e["ckey"]]
-            radius = 2.0
-            el = self.addEllipse(0-radius/2, 0-radius/2, radius, radius, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["ENTREPOT"]))
-            el.setPos(coords["x"], coords["y"])
+            font = QtGui.QFont("Georgia", 10);
+            label = self.addText(r["label"].replace("Receptacle", "R").replace("Entrepot", "E"), font)
+            label.scale(0.02, 0.02)
+            label.setPos(coords["x"] - label.sceneBoundingRect().width()/2, coords["y"]- label.sceneBoundingRect().height()/2)
+
+        for ckey, d in self.mainWindow.commandes.items():
+            coords = self.mainWindow.coordinates[ckey]
+            rect = QRectF()
+            for far in range(2,5):
+                foundFreeSpot = False
+                for delta in delta_pos:
+                    newcoords = {
+                        "x" : coords["x"] + delta[0]*far,
+                        "y" : coords["y"] + delta[1]*far
+                    }
+                    rect = QRectF(QPointF(0,0), QPointF(1, 0.5 * len(d)))
+                    rect.moveCenter(QPointF(newcoords["x"], newcoords["y"]))
+                    foundFreeSpot = True
+                    items = self.items()
+                    for i in items:
+                        if (not (isinstance(i, QGraphicsItemGroup))) and (rect.intersects(i.sceneBoundingRect())):
+                            foundFreeSpot = False
+                            break
+                    if(foundFreeSpot):
+                        break
+                if(foundFreeSpot):
+                    break
+            if not foundFreeSpot:
+                print "WARNING: could not place label for commande, no free spot found"
+            else:
+                l = self.addLine(coords["x"], coords["y"], rect.center().x(), rect.center().y(), QtGui.QPen(COLORS["BLACK"]))
+                r = self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
+                font = QtGui.QFont("Georgia", 10);
+                for index in range(0, len(d)):
+                    label = self.addText(d[index]["label"].replace("Commande", "c") + " : " + d[index]["demande"], font)
+                    label.scale(0.015, 0.015)
+                    label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
+                        rect.top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
+
+        for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
+                coords = self.mainWindow.coordinates[drone["ckey"]]
+                d = self.addPixmap(self.droneMap)
+                d.scale(DRONE_SCALE, DRONE_SCALE)
+                d.setOffset(-self.droneMap.width()/2,-self.droneMap.height()/2)
+                d.setPos(coords["x"], coords["y"])
 
 class View(QtGui.QGraphicsView):
     def __init__(self):
@@ -156,7 +206,7 @@ class MainWindow(QtGui.QWidget):
         self.time_control.setValue(0)
         self.drones = [[] for i in range(nbSteps)]
         self.receptacles = []
-        self.entrepots = []
+        self.commandes = {}
 
         #Place each object
         for t in tree.findall(".//field[@label='coordonnees']/tuple"):
@@ -166,16 +216,27 @@ class MainWindow(QtGui.QWidget):
                     'label' : label,
                     'ckey' : t[1].get("label")
                 })
-            elif(label.startswith("Receptacle")):
+            elif(label.startswith("Receptacle") or label.startswith("Entrepot")):
                 self.receptacles.append({
                     'label' : label,
                     'ckey' : t[1].get("label")
                 })
-            elif(label.startswith("Entrepot")):
-                self.entrepots.append({
-                    'label' : label,
-                    'ckey' : t[1].get("label")
+
+        #Get deliveries
+        for d in tree.findall(".//field[@label='coordonneesLivraison']/tuple"):
+            ckey = d[1].get("label")
+            if ckey in self.commandes:
+                self.commandes[ckey].append({
+                    'label' : d[0].get("label"),
+                    'demande' : 3
                 })
+            else:
+                self.commandes[ckey] = [
+                    {
+                        'label' : d[0].get("label"),
+                        'demande' : "3"
+                    }
+                ]
 
         self.myscene.updateScene()
         self.time_control.setDisabled(False)

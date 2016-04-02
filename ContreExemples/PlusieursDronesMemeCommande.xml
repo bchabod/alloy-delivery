@@ -1,0 +1,353 @@
+<alloy builddate="2015-02-22 18:21 EST">
+
+<instance bitwidth="6" maxseq="15" command="Check assertCommandes for 15 but 6 int, 2 Drone, 5 Receptacle, 1 Entrepot, 2 Commande" filename="/home/pierre/Documents/Projects/alloy-delivery/alloy-delivery.als">
+
+<sig label="seq/Int" ID="0" parentID="1" builtin="yes">
+</sig>
+
+<sig label="Int" ID="1" parentID="2" builtin="yes">
+</sig>
+
+<sig label="String" ID="3" parentID="2" builtin="yes">
+</sig>
+
+<sig label="this/Time" ID="4" parentID="2">
+   <atom label="Time$0"/>
+   <atom label="Time$1"/>
+   <atom label="Time$2"/>
+   <atom label="Time$3"/>
+   <atom label="Time$4"/>
+   <atom label="Time$5"/>
+   <atom label="Time$6"/>
+   <atom label="Time$7"/>
+   <atom label="Time$8"/>
+   <atom label="Time$9"/>
+   <atom label="Time$10"/>
+   <atom label="Time$11"/>
+   <atom label="Time$12"/>
+   <atom label="Time$13"/>
+   <atom label="Time$14"/>
+</sig>
+
+<sig label="this/Drone" ID="5" parentID="2">
+   <atom label="Drone$0"/>
+   <atom label="Drone$1"/>
+</sig>
+
+<field label="coordonnees" ID="6" parentID="5">
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$0"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$14"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$0"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$14"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$5"/> </tuple>
+   <types> <type ID="5"/> <type ID="7"/> <type ID="4"/> </types>
+</field>
+
+<field label="batterie" ID="8" parentID="5">
+   <tuple> <atom label="Drone$0"/> <atom label="2"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="2"/> <atom label="Time$14"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$0"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="3"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="2"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="2"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="2"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$0"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="3"/> <atom label="Time$14"/> </tuple>
+   <types> <type ID="5"/> <type ID="1"/> <type ID="4"/> </types>
+</field>
+
+<field label="commande" ID="9" parentID="5">
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Commande$0"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Commande$0"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Commande$0"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Commande$0"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Commande$0"/> <atom label="Time$4"/> </tuple>
+   <types> <type ID="5"/> <type ID="10"/> <type ID="4"/> </types>
+</field>
+
+<field label="coordonneesCible" ID="11" parentID="5">
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$6"/> <atom label="Time$14"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Drone$0"/> <atom label="Coordonnees$7"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$6"/> <atom label="Time$14"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Coordonnees$7"/> <atom label="Time$5"/> </tuple>
+   <types> <type ID="5"/> <type ID="7"/> <type ID="4"/> </types>
+</field>
+
+<field label="coordReceptaclesVisites" ID="12" parentID="5">
+   <types> <type ID="5"/> <type ID="7"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/Receptacle" ID="13" parentID="2">
+   <atom label="Receptacle$0"/>
+   <atom label="Receptacle$1"/>
+   <atom label="Receptacle$2"/>
+   <atom label="Receptacle$3"/>
+   <atom label="Receptacle$4"/>
+</sig>
+
+<field label="coordonnees" ID="14" parentID="13">
+   <tuple> <atom label="Receptacle$0"/> <atom label="Coordonnees$4"/> </tuple>
+   <tuple> <atom label="Receptacle$1"/> <atom label="Coordonnees$2"/> </tuple>
+   <tuple> <atom label="Receptacle$2"/> <atom label="Coordonnees$1"/> </tuple>
+   <tuple> <atom label="Receptacle$3"/> <atom label="Coordonnees$3"/> </tuple>
+   <tuple> <atom label="Receptacle$4"/> <atom label="Coordonnees$7"/> </tuple>
+   <types> <type ID="13"/> <type ID="7"/> </types>
+</field>
+
+<field label="receptaclesVoisins" ID="15" parentID="13">
+   <tuple> <atom label="Receptacle$0"/> <atom label="Receptacle$3"/> </tuple>
+   <tuple> <atom label="Receptacle$1"/> <atom label="Receptacle$3"/> </tuple>
+   <tuple> <atom label="Receptacle$2"/> <atom label="Receptacle$3"/> </tuple>
+   <tuple> <atom label="Receptacle$3"/> <atom label="Receptacle$0"/> </tuple>
+   <tuple> <atom label="Receptacle$3"/> <atom label="Receptacle$1"/> </tuple>
+   <tuple> <atom label="Receptacle$3"/> <atom label="Receptacle$2"/> </tuple>
+   <tuple> <atom label="Receptacle$3"/> <atom label="Receptacle$4"/> </tuple>
+   <tuple> <atom label="Receptacle$4"/> <atom label="Receptacle$3"/> </tuple>
+   <types> <type ID="13"/> <type ID="13"/> </types>
+</field>
+
+<sig label="this/Entrepot" ID="16" parentID="2">
+   <atom label="Entrepot$0"/>
+</sig>
+
+<field label="coordonnees" ID="17" parentID="16">
+   <tuple> <atom label="Entrepot$0"/> <atom label="Coordonnees$6"/> </tuple>
+   <types> <type ID="16"/> <type ID="7"/> </types>
+</field>
+
+<field label="receptaclesVoisinsEntrepot" ID="18" parentID="16">
+   <tuple> <atom label="Entrepot$0"/> <atom label="Receptacle$3"/> </tuple>
+   <tuple> <atom label="Entrepot$0"/> <atom label="Receptacle$4"/> </tuple>
+   <types> <type ID="16"/> <type ID="13"/> </types>
+</field>
+
+<field label="commandes" ID="19" parentID="16">
+   <tuple> <atom label="Entrepot$0"/> <atom label="Commande$0"/> </tuple>
+   <types> <type ID="16"/> <type ID="10"/> </types>
+</field>
+
+<sig label="this/Coordonnees" ID="7" parentID="2">
+   <atom label="Coordonnees$0"/>
+   <atom label="Coordonnees$1"/>
+   <atom label="Coordonnees$2"/>
+   <atom label="Coordonnees$3"/>
+   <atom label="Coordonnees$4"/>
+   <atom label="Coordonnees$5"/>
+   <atom label="Coordonnees$6"/>
+   <atom label="Coordonnees$7"/>
+</sig>
+
+<field label="x" ID="20" parentID="7">
+   <tuple> <atom label="Coordonnees$0"/> <atom label="31"/> </tuple>
+   <tuple> <atom label="Coordonnees$1"/> <atom label="31"/> </tuple>
+   <tuple> <atom label="Coordonnees$2"/> <atom label="31"/> </tuple>
+   <tuple> <atom label="Coordonnees$3"/> <atom label="-22"/> </tuple>
+   <tuple> <atom label="Coordonnees$4"/> <atom label="-22"/> </tuple>
+   <tuple> <atom label="Coordonnees$5"/> <atom label="-22"/> </tuple>
+   <tuple> <atom label="Coordonnees$6"/> <atom label="-22"/> </tuple>
+   <tuple> <atom label="Coordonnees$7"/> <atom label="-22"/> </tuple>
+   <types> <type ID="7"/> <type ID="1"/> </types>
+</field>
+
+<field label="y" ID="21" parentID="7">
+   <tuple> <atom label="Coordonnees$0"/> <atom label="20"/> </tuple>
+   <tuple> <atom label="Coordonnees$1"/> <atom label="29"/> </tuple>
+   <tuple> <atom label="Coordonnees$2"/> <atom label="12"/> </tuple>
+   <tuple> <atom label="Coordonnees$3"/> <atom label="-28"/> </tuple>
+   <tuple> <atom label="Coordonnees$4"/> <atom label="25"/> </tuple>
+   <tuple> <atom label="Coordonnees$5"/> <atom label="29"/> </tuple>
+   <tuple> <atom label="Coordonnees$6"/> <atom label="20"/> </tuple>
+   <tuple> <atom label="Coordonnees$7"/> <atom label="21"/> </tuple>
+   <types> <type ID="7"/> <type ID="1"/> </types>
+</field>
+
+<sig label="this/Commande" ID="10" parentID="2">
+   <atom label="Commande$0"/>
+</sig>
+
+<field label="coordonneesLivraison" ID="22" parentID="10">
+   <tuple> <atom label="Commande$0"/> <atom label="Coordonnees$7"/> </tuple>
+   <types> <type ID="10"/> <type ID="7"/> </types>
+</field>
+
+<field label="affectee" ID="23" parentID="10">
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/True$0"/> <atom label="Time$14"/> </tuple>
+   <tuple> <atom label="Commande$0"/> <atom label="boolean/False$0"/> <atom label="Time$0"/> </tuple>
+   <types> <type ID="10"/> <type ID="24"/> <type ID="4"/> </types>
+</field>
+
+<sig label="to/Ord" ID="25" parentID="2" one="yes" private="yes">
+   <atom label="to/Ord$0"/>
+</sig>
+
+<field label="First" ID="26" parentID="25" private="yes">
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$0"/> </tuple>
+   <types> <type ID="25"/> <type ID="4"/> </types>
+</field>
+
+<field label="Next" ID="27" parentID="25" private="yes">
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$0"/> <atom label="Time$1"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$1"/> <atom label="Time$2"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$2"/> <atom label="Time$3"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$3"/> <atom label="Time$4"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$4"/> <atom label="Time$5"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$5"/> <atom label="Time$6"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$6"/> <atom label="Time$7"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$7"/> <atom label="Time$8"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$8"/> <atom label="Time$9"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$9"/> <atom label="Time$10"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$10"/> <atom label="Time$11"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$11"/> <atom label="Time$12"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$12"/> <atom label="Time$13"/> </tuple>
+   <tuple> <atom label="to/Ord$0"/> <atom label="Time$13"/> <atom label="Time$14"/> </tuple>
+   <types> <type ID="25"/> <type ID="4"/> <type ID="4"/> </types>
+</field>
+
+<sig label="boolean/True" ID="28" parentID="24" one="yes">
+   <atom label="boolean/True$0"/>
+</sig>
+
+<sig label="boolean/False" ID="29" parentID="24" one="yes">
+   <atom label="boolean/False$0"/>
+</sig>
+
+<sig label="boolean/Bool" ID="24" parentID="2" abstract="yes">
+</sig>
+
+<sig label="univ" ID="2" builtin="yes">
+</sig>
+
+<skolem label="$coordonneesCommandes_r" ID="30">
+   <tuple> <atom label="Commande$0"/> <atom label="Receptacle$4"/> </tuple>
+   <types> <type ID="10"/> <type ID="13"/> </types>
+</skolem>
+
+<skolem label="$init_e" ID="31">
+   <tuple> <atom label="Drone$0"/> <atom label="Entrepot$0"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Entrepot$0"/> </tuple>
+   <types> <type ID="5"/> <type ID="16"/> </types>
+</skolem>
+
+<skolem label="$assertCommandes_e" ID="32">
+   <tuple> <atom label="Drone$0"/> <atom label="Entrepot$0"/> </tuple>
+   <tuple> <atom label="Drone$1"/> <atom label="Entrepot$0"/> </tuple>
+   <types> <type ID="5"/> <type ID="16"/> </types>
+</skolem>
+
+<skolem label="$assertCommandes_d0" ID="33">
+   <tuple> <atom label="Drone$1"/> </tuple>
+   <types> <type ID="5"/> </types>
+</skolem>
+
+<skolem label="$assertCommandes_d1" ID="34">
+   <tuple> <atom label="Drone$0"/> </tuple>
+   <types> <type ID="5"/> </types>
+</skolem>
+
+<skolem label="$assertCommandes_t" ID="35">
+   <tuple> <atom label="Time$3"/> </tuple>
+   <types> <type ID="4"/> </types>
+</skolem>
+
+</instance>
+
+<source filename="/home/pierre/Documents/Projects/alloy-delivery/alloy-delivery.als" content="open util/integer&#x000a;open util/ordering[Time] as to&#x000a;open util/boolean&#x000a;&#x000a;/********************************* Signatures *********************************/&#x000a;&#x000a;/**&#x000a; * Signature Time pour simuler le temps.&#x000a; */&#x000a;sig Time&#x000a;{&#x000a;}&#x000a;&#x000a;/**&#x000a; * Signature de l&apos;objet Drone&#x000a; * Attributs :&#x000a; *    coordonnees : coordonnees actuelles du drone&#x000a; */&#x000a;sig Drone&#x000a;{&#x000a;    coordonnees : Coordonnees one -&gt; Time,&#x000a;&#x0009;batterie : Int one -&gt; Time,&#x000a;&#x0009;commande : Commande lone -&gt; Time,&#x000a;&#x0009;coordonneesCible : Coordonnees lone -&gt; Time,&#x000a;//&#x0009;capaciteMax : Int, &#x000a;//&#x0009;contenanceActuel : Int,&#x000a;&#x0009;coordReceptaclesVisites : Coordonnees set -&gt; Time&#x000a;}&#x000a;&#x000a;/**&#x000a; * Signature de l&apos;objet Receptacle&#x000a; * Attributs :&#x000a; *    coordonnees : coordonnees du receptables&#x000a; *    receptaclesVoisins : tous les receptables voisins de ce receptable&#x000a; */&#x000a;sig Receptacle&#x000a;{&#x000a;    coordonnees : Coordonnees,&#x000a;//&#x0009;capaciteMax : Int, &#x000a;//&#x0009;contenanceActuel : Int&#x000a;&#x0009;receptaclesVoisins : some Receptacle&#x000a;}&#x000a;&#x000a;/**&#x000a; * Signature de l&apos;objet Entrepot&#x000a; * Attributs :&#x000a; *    coordonnees : coordonnees de l&apos;entrepot&#x000a; *    receptaclesVoisins : tous les receptables voisins de cet entrepot&#x000a; */&#x000a;sig Entrepot&#x000a;{&#x000a;&#x0009;coordonnees : Coordonnees,&#x000a;&#x0009;receptaclesVoisinsEntrepot : some Receptacle,&#x000a;&#x0009;commandes: some Commande&#x000a;}&#x000a;&#x000a;/**&#x000a; * Signature de l&apos;objet Coordonnees&#x000a; * Attributs :&#x000a; *    x : coordonnee X (entier) de cette coordonnee&#x000a; *    Y : coordonnee Y (entier) de cette coordonnee&#x000a; */&#x000a;sig Coordonnees&#x000a;{&#x000a;    x : Int,&#x000a;    y : Int&#x000a;}&#x000a;&#x000a;/**&#x000a; * Signature de l&apos;objet Commande&#x000a; * Attributs :&#x000a; *&#x0009;  coordonneesLivraison : Coordonnees ou doit etre effectuee la livraison&#x000a; */ &#x000a;sig Commande&#x000a;{&#x000a;&#x0009;coordonneesLivraison : Coordonnees,&#x000a;//&#x0009;contenanceActuelle: Int&#x000a;&#x0009;affectee : Bool one -&gt; Time&#x000a;}&#x000a;/********************************* Fonctions *********************************/&#x000a;&#x000a;/** &#x000a;  * Calcule la valeur absolue d&apos;un entier&#x000a;  * Retourne : la valeur absolue de l&apos;entier X&#x000a;  */&#x000a;fun abs[x: Int]: Int {&#x000a;    x &gt;= 0 =&gt; x else x.mul[-1]&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Calcule la valeur max entre deux entiers&#x000a;  * Retourne : la valeur max entre a et b&#x000a;  */&#x000a;fun max[a, b: Int]: Int {&#x000a;&#x0009;a &gt; b =&gt; a else b&#x000a;}&#x000a;&#x000a;/********************************* Faits *********************************/&#x000a;&#x000a;/** &#x000a;  * Ensemble des faits pour placer les elements avec leurs coordonnees&#x000a;  */&#x000a;fact invCoordonnees&#x000a;{&#x000a;&#x0009;initInstances&#x000a;&#x0009;predCoordonnees&#x000a;&#x000a;&#x0009;receptaclesVoisins&#x000a;}&#x000a;&#x000a;/*&#x000a;fact initCapacites&#x000a;{&#x000a;&#x0009;capacitesReceptacles&#x000a;&#x0009;capacitesDrones&#x000a;&#x0009;batterieDrones&#x000a;}&#x000a;*/&#x000a;&#x000a;/**&#x000a; * Sequences d&apos;execution&#x000a; */&#x000a;fact traces &#x000a;{&#x000a;&#x0009;// Post-Condition du programme&#x000a;&#x0009;init [to/first]&#x000a;&#x000a;&#x0009;// Execution&#x000a;&#x0009;all t: Time - to/last &#x000a;&#x0009;&#x0009;| let t&apos; = t.next &#x000a;&#x0009;&#x0009;&#x0009;| all drone: Drone &#x000a;&#x0009;&#x0009;&#x0009;&#x0009;|  (charger[t, t&apos;, drone] || rechargerBatterie[t, t&apos;, drone] || livrer[t, t&apos;, drone] || deplacerDroneVersCommande[t, t&apos;, drone] || deplacerDroneVersEntrepot[t, t&apos;, drone] || skip[t, t&apos;, drone])&#x000a;&#x000a;&#x0009;all t: Time - to/last &#x000a;&#x0009;&#x0009;| let t&apos; = t.next &#x000a;&#x0009;&#x0009;&#x0009;| all c: Commande&#x000a;&#x0009;&#x0009;&#x0009;&#x0009;| majCommande[t, t&apos;, c]&#x000a;&#x000a;&#x0009;// Post-Condition du programme&#x000a;&#x0009;all drone: Drone | #drone.commande.to/last = 0 &amp;&amp; some e:Entrepot | drone.coordonnees.to/last = e.coordonnees&#x000a;&#x0009;all c: Commande | c.affectee.to/last = {True}&#x000a;}&#x000a;&#x000a;/**&#x000a; * Initialisation &#x00e0; T0&#x000a; */&#x000a;pred init [t: Time]&#x000a;{&#x000a;&#x0009;// Tous les drones sont sur un entrepot&#x000a;&#x0009;all d: Drone | some e: Entrepot | d.coordonnees.t = e.coordonnees&#x000a;&#x000a;&#x0009;// Toutes les commandes appartiennent a l&apos;entrepot&#x000a;&#x0009;all c:Commande | one e:Entrepot | c in e.commandes&#x000a;&#x000a;&#x0009;// Pas de commande &#x00e0; prendre en charge en d&#x00e9;but&#x000a;&#x0009;all d: Drone | #d.commande.t = 0 &amp;&amp; #d.coordonneesCible.t = 0 &amp;&amp; #d.coordReceptaclesVisites.t = 0&#x000a;&#x000a;&#x0009;// Toutes les commandes sont non affect&#x00e9;es&#x000a;&#x0009;all c: Commande | c.affectee.t = {False}&#x000a;&#x0009;&#x000a;&#x0009;// Initialise la batterie au max&#x000a;&#x0009;all d: Drone | d.batterie.t = 3&#x000a;}&#x000a;&#x000a;/**&#x000a; * Op&#x00e9;ration : Charge une commande&#x000a; * Pr&#x00e9;condition : Drone sur entrepot, sans commande, avec batterie pleine, avec presence de commandes &#x00e0; traiter&#x000a; */&#x000a;pred charger [t, t&apos;: Time, drone: Drone] &#x000a;{&#x000a;&#x0009;// Pr&#x00e9;condition&#x000a;&#x0009;(one e: Entrepot | drone.coordonnees.t = e.coordonnees &amp;&amp; some c: e.commandes | c.affectee.t = {False}) &amp;&amp; drone.batterie.t = 3 &amp;&amp; #drone.commande.t = 0&#x000a;&#x000a;&#x0009;// Affectation de la commande&#x000a;&#x0009;some c: Commande, e: Entrepot | c in e.commandes &amp;&amp; c.affectee.t = {False} &amp;&amp; drone.commande.t&apos; = c &amp;&amp; c.affectee.t&apos; = {True}&#x000a;&#x000a;&#x0009;// Commande ne pouvant &#x00ea;tre partag&#x00e9;e avec d&apos;autres drones&#x000a;//&#x0009;no d: Drone | d != drone &amp;&amp; d.commande.t&apos; = drone.commande.t&apos;&#x000a;&#x000a;&#x0009;// Initialisation du r&#x00e9;ceptacle cible du drone au r&#x00e9;ceptacle le plus proche, qui est dans l&apos;ilot de la commande&#x000a;&#x0009;some r: Receptacle | drone.coordonneesCible.t&apos; = r.coordonnees &amp;&amp; r.coordonnees.positionVoisin[drone.coordonnees.t]&#x000a;&#x000a;&#x0009;// Nouveau parcours &#x00e0; effectuer&#x000a;&#x0009;#drone.coordReceptaclesVisites.t&apos; = 0&#x000a;&#x000a;&#x0009;// Nouvelles valeurs&#x000a;&#x0009;drone.coordonnees.t&apos; = drone.coordonnees.t&#x000a;&#x0009;drone.batterie.t&apos; = drone.batterie.t&#x000a;}&#x000a;&#x000a;/**&#x000a; * Op&#x00e9;ration : Recharge de batterie&#x000a; * Pr&#x00e9;condition : Drone sur son r&#x00e9;ceptacle cible et poss&#x00e8;de une batterie &lt; 3 (non pleine)&#x000a; */&#x000a;pred rechargerBatterie [t, t&apos;: Time, drone: Drone] &#x000a;{&#x000a;&#x0009;// Pr&#x00e9;condition&#x000a;&#x0009;drone.coordonnees.t = drone.coordonneesCible.t &amp;&amp; drone.batterie.t &lt; 3&#x000a;&#x000a;&#x0009;// Nouvelles valeurs&#x000a;&#x0009;drone.coordonnees.t&apos; = drone.coordonnees.t&#x000a;&#x0009;drone.coordonneesCible.t&apos; = drone.coordonneesCible.t&#x000a;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t&#x000a;&#x0009;drone.commande.t&apos; = drone.commande.t&#x000a;&#x0009;drone.batterie.t&apos; = drone.batterie.t.add[1]&#x000a;}&#x000a;&#x000a;/**&#x000a; * Op&#x00e9;ration : D&#x00e9;placement de drone&#x000a; * Pr&#x00e9;condition : Poss&#x00e8;de une commande, n&apos;est pas sur la livraison et :&#x000a; *&#x0009;- Soit le drone se situe sur la cible mais avec une batterie pleine (si non pleine il doit se recharger)&#x000a; *  - Soit le drone ne se situe pas sur la cible&#x000a; */&#x000a;pred deplacerDroneVersCommande [t, t&apos;: Time, drone: Drone] &#x000a;{&#x000a;&#x0009;// Pr&#x00e9;condition&#x000a;&#x0009;((drone.coordonnees.t = drone.coordonneesCible.t &amp;&amp; drone.batterie.t = 3) || (drone.coordonnees.t != drone.coordonneesCible.t))&#x000a;&#x0009;#drone.commande.t = 1 &amp;&amp; drone.commande.t.coordonneesLivraison != drone.coordonnees.t&#x0009;&#x000a;&#x000a;&#x0009;// On regarde si la cible a ete atteinte&#x000a;&#x0009;drone.coordonnees.t = drone.coordonneesCible.t =&gt; {&#x000a;&#x0009;&#x0009;// On ajoute les coordonnees du receptacle au chemin parcouru&#x000a;&#x0009;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t + drone.coordonneesCible.t&#x000a;&#x0009;&#x0009;// Le receptacle cible change&#x000a;&#x0009;&#x0009;some r: Receptacle &#x000a;&#x0009;&#x0009;&#x0009;| r.coordonnees.positionVoisin[drone.coordonnees.t] &amp;&amp; r.coordonnees not in drone.coordReceptaclesVisites.t &amp;&amp; drone.coordonneesCible.t&apos; = r.coordonnees&#x000a;&#x0009;} else {&#x000a;&#x0009;&#x0009;// On garde le m&#x00ea;me r&#x00e9;ceptacle cible&#x000a;&#x0009;&#x0009;drone.coordonneesCible.t&apos; = drone.coordonneesCible.t&#x000a;&#x0009;&#x0009;// On garde le m&#x00ea;me chemin&#x000a;&#x0009;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t&#x000a;&#x0009;}&#x000a;&#x000a;&#x0009;// On se dirige vers la cible a l&apos;instant t&apos;&#x000a;&#x0009;(&#x000a;&#x0009;&#x0009;(drone.coordonneesCible.t&apos;.x &gt; drone.coordonnees.t.x &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x.add[1] &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y)&#x000a;  &#x0009; || (drone.coordonneesCible.t&apos;.x &lt; drone.coordonnees.t.x &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x.sub[1] &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y)&#x000a;     || (drone.coordonneesCible.t&apos;.y &gt; drone.coordonnees.t.y &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y.add[1] &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x)&#x000a;     || (drone.coordonneesCible.t&apos;.y &lt; drone.coordonnees.t.y &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y.sub[1] &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x)&#x000a;&#x0009;)&#x000a;&#x000a;&#x0009;// On v&#x00e9;rifie qu&apos;un autre drone ne souhaite pas aller aux futures coordonnees, sauf s&apos;il s&apos;agit d&apos;un entrepot&#x000a;&#x0009;no d: Drone | d != drone &amp;&amp; d.coordonnees.t&apos; = drone.coordonnees.t&apos; &amp;&amp; no e: Entrepot | e.coordonnees = drone.coordonnees.t&apos;&#x000a;&#x000a;&#x0009;// Diminution de la batterie&#x000a;&#x0009;drone.batterie.t&apos; = drone.batterie.t.sub[1]&#x000a;&#x000a;&#x0009;drone.commande.t&apos; = drone.commande.t&#x000a;}&#x0009;&#x000a;&#x000a;/**&#x000a; * Op&#x00e9;ration : D&#x00e9;placement retour d&apos;un drone&#x000a; * Pr&#x00e9;condition : Plus de commande et n&apos;est pas sur un entrepot&#x000a; */&#x000a;pred deplacerDroneVersEntrepot [t, t&apos;: Time, drone: Drone] &#x000a;{&#x000a;&#x0009;// Pr&#x00e9;dicat&#x000a;&#x0009;#drone.commande.t = 0 &amp;&amp; no e: Entrepot | drone.coordonnees.t = e.coordonnees&#x000a;&#x000a;&#x0009;// On regarde si la cible change&#x000a;&#x0009;drone.coordonnees.t = drone.coordonneesCible.t =&gt; {&#x000a;&#x0009;&#x0009;// On enleve le r&#x00e9;ceptacle au chemin a parcourir&#x000a;&#x0009;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t - drone.coordonneesCible.t&#x000a;&#x0009;&#x0009;// La cible change : soit le receptacle voisin dans l&apos;historique, soit un entrepot si historique vide&#x000a;&#x0009;&#x0009;#drone.coordReceptaclesVisites.t&apos; &gt; 0 =&gt; {&#x000a; &#x0009;&#x0009;&#x0009;some cible: Coordonnees &#x000a;&#x0009;&#x0009;&#x0009;&#x0009;| cible.positionVoisin[drone.coordonnees.t] &amp;&amp; cible in drone.coordReceptaclesVisites.t &amp;&amp; drone.coordonneesCible.t&apos; = cible&#x000a;&#x0009;&#x0009;} else {&#x000a;&#x0009;&#x0009;&#x0009;some e: Entrepot&#x000a;&#x0009;&#x0009;&#x0009;&#x0009;| e.coordonnees.positionVoisin[drone.coordonnees.t] &amp;&amp; drone.coordonneesCible.t&apos; = e.coordonnees&#x000a;&#x0009;&#x0009;}&#x000a;&#x0009;} else {&#x000a;&#x0009;&#x0009;// On garde la meme cible&#x000a;&#x0009;&#x0009;drone.coordonneesCible.t&apos; = drone.coordonneesCible.t&#x000a;&#x0009;&#x0009;// On garde le m&#x00ea;me chemin&#x000a;&#x0009;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t&#x000a;&#x0009;}&#x000a;&#x000a;&#x0009;// On se dirige vers la cible a l&apos;instant t&apos;&#x000a;&#x0009;(&#x000a;&#x0009;&#x0009;(drone.coordonneesCible.t&apos;.x &gt; drone.coordonnees.t.x &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x.add[1] &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y)&#x000a;  &#x0009; || (drone.coordonneesCible.t&apos;.x &lt; drone.coordonnees.t.x &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x.sub[1] &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y)&#x000a;     || (drone.coordonneesCible.t&apos;.y &gt; drone.coordonnees.t.y &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y.add[1] &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x)&#x000a;     || (drone.coordonneesCible.t&apos;.y &lt; drone.coordonnees.t.y &amp;&amp; drone.coordonnees.t&apos;.y = drone.coordonnees.t.y.sub[1] &amp;&amp; drone.coordonnees.t&apos;.x = drone.coordonnees.t.x)&#x000a;&#x0009;)&#x000a;&#x000a;&#x0009;// On v&#x00e9;rifie qu&apos;un autre drone ne souhaite pas aller aux futures coordonnees, sauf s&apos;il s&apos;agit d&apos;un entrepot&#x000a;&#x0009;no d: Drone | d != drone &amp;&amp; d.coordonnees.t&apos; = drone.coordonnees.t&apos; &amp;&amp; no e: Entrepot | e.coordonnees = drone.coordonnees.t&apos;&#x000a;&#x000a;&#x0009;// Diminution de la batterie&#x000a;&#x0009;drone.batterie.t&apos; = drone.batterie.t.sub[1]&#x000a;&#x000a;&#x0009;// Nouvelles valeurs&#x000a;&#x0009;drone.commande.t&apos; = drone.commande.t&#x000a;}&#x000a;&#x000a;pred skip [t, t&apos;: Time, drone: Drone] &#x000a;{&#x000a;&#x0009;// Nouvelles valeurs&#x000a;&#x0009;drone.coordonnees.t&apos; = drone.coordonnees.t&#x000a;&#x0009;drone.coordonneesCible.t&apos; = drone.coordonneesCible.t&#x000a;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t&#x000a;&#x0009;drone.commande.t&apos; = drone.commande.t&#x000a;&#x0009;drone.batterie.t&apos; = drone.batterie.t&#x000a;}&#x000a;&#x000a;pred majCommande [t, t&apos; : Time, c : Commande] &#x000a;{&#x000a;&#x0009;(no d: Drone | d.commande.t&apos; = c) =&gt; {&#x000a;&#x0009;&#x0009;// On conserve la valeur affectee&#x000a;&#x0009;&#x0009;c.affectee.t&apos; = c.affectee.t&#x000a;&#x0009;}&#x000a;}&#x000a;&#x000a;/**&#x000a; * Op&#x00e9;ration : Livrer une commande&#x000a; * Pr&#x00e9;condition : Batterie pleine (= 3) &amp;&amp; Sur les coordonnees de livraison &amp;&amp; Presence d&apos;une commande&#x000a; */&#x000a;pred livrer [t, t&apos;: Time, drone: Drone] &#x000a;{&#x000a;&#x0009;// Pr&#x00e9;condition&#x000a;&#x0009;#drone.commande.t = 1 &amp;&amp; drone.coordonnees.t = drone.commande.t.coordonneesLivraison &amp;&amp; drone.batterie.t = 3&#x000a;&#x000a;&#x0009;// Nouvelles valeurs&#x000a;&#x0009;drone.coordonnees.t&apos; = drone.coordonnees.t&#x000a;&#x0009;drone.coordonneesCible.t&apos; = drone.coordonneesCible.t&#x000a;&#x0009;drone.coordReceptaclesVisites.t&apos; = drone.coordReceptaclesVisites.t&#x000a;&#x0009;drone.batterie.t&apos; = drone.batterie.t&#x000a;&#x000a;&#x0009;// TODO : Mettre commande &#x00e0; 0 -&gt; commande doit d&#x00e9;pendre du temps aussi !&#x000a;&#x0009;#drone.commande.t&apos; = 0&#x000a;}&#x000a;&#x000a;&#x000a;&#x000a;/********************************* Predicats *********************************/&#x000a;&#x000a;/** &#x000a;  * V&#x00e9;rifie que deux coordonnees sont egales&#x000a;  */&#x000a;pred coordonneesEgales[c0,c1 : Coordonnees]&#x000a;{&#x000a;&#x0009;c0.x = c1.x &amp;&amp; c0.y = c1.y&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Initialise le nombre d&apos;instances des objets&#x000a;  */&#x000a;pred initInstances&#x000a;{&#x000a;&#x0009;one Entrepot&#x000a;&#x0009;#Drone = 2&#x0009;// DNB&#x000a;&#x0009;#Receptacle = 5&#x0009;// RNB&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Ensemble des predicats qui contraignent les coordonnees&#x000a;  */&#x000a;pred predCoordonnees&#x000a;{&#x000a;&#x0009;coordonneesUniques&#x000a;&#x0009;coordonneesReceptacles&#x000a;&#x0009;coordonneesEntrepot&#x000a;&#x0009;coordonneesDrones&#x000a;&#x0009;coordonneesCommandes&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Verifie que les instances de Coordonnees sont sur des cases differentes&#x000a;  */&#x000a;pred coordonneesUniques&#x000a;{&#x000a;&#x0009;no c0, c1 : Coordonnees | (c0 != c1 &amp;&amp; c1.coordonneesEgales[c0])&#x000a;}&#x000a;/** &#x000a;  * Verifie que les receptacles soient sur des coordonnees differentes&#x000a;  */&#x000a;pred coordonneesReceptacles&#x000a;{&#x000a;&#x0009;no r0, r1 : Receptacle | (r0 != r1 &amp;&amp; r0.coordonnees = r1.coordonnees)&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Verifie que les receptacles ne soient pas sur les coordonnees des entrepots&#x000a;  */&#x000a;pred coordonneesEntrepot&#x000a;{&#x000a;&#x0009;no r : Receptacle, e : Entrepot | r.coordonnees = e.coordonnees&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Verifie que les drones ne soient pas sur les memes coordonnees, a l&apos;exception des entrepots,&#x000a;  * qui peuvent heberger plusieurs drones.&#x000a;  */&#x000a;pred coordonneesDrones&#x000a;{&#x000a;//&#x0009;no d0, d1 : Drone | (d0 != d1  &amp;&amp; d0.coordonnees = d1.coordonnees &amp;&amp; (no e0 : Entrepot | d0.coordonnees = e0.coordonnees))&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Verifie que les commandes sont sur des receptacles&#x000a;  */&#x000a;pred coordonneesCommandes&#x000a;{&#x000a;&#x0009;all c: Commande | some r: Receptacle | c.coordonneesLivraison = r.coordonnees&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Verifie que deux coordonnees soient au plus d&apos;une distance de 3 cases (distance de manhattan)&#x000a;  */&#x000a;pred positionVoisin[c0, c1 : Coordonnees]&#x000a;{&#x000a;&#x0009;abs[c0.x.sub[c1.x]].add[abs[c0.y.sub[c1.y]]] =&lt; 3&#x000a;}&#x000a;&#x000a;/** &#x000a;  * Verifie que deux coordonnees soient au plus d&apos;une distance de 3 cases (distance de manhattan)&#x000a;  */&#x000a;pred receptaclesVoisins&#x000a;{&#x000a;&#x0009;// Decommenter la ligne ci-dessous pour forcer plusieurs chemins en sortie de l&apos;entrepot&#x000a;&#x0009;//all e0 : Entrepot | #e0.receptaclesVoisins = 2&#x000a;&#x000a;&#x0009;// Associe des receptacles voisins aux entrepots&#x000a;&#x0009;all e0 : Entrepot | all r0: e0.receptaclesVoisinsEntrepot | e0.coordonnees.positionVoisin[r0.coordonnees] &#x000a;&#x000a;&#x0009;// Empeche un receptacle d&apos;etre son propre voisin&#x000a;&#x0009;all r0 : Receptacle &#x000a;&#x0009;&#x0009;| !(r0 in r0.receptaclesVoisins)&#x000a;&#x000a;&#x0009;// Associe pour chaque receptacle ses receptacles voisins&#x000a;&#x0009;all r0: Receptacle | all r1 : r0.receptaclesVoisins | r1.coordonnees.positionVoisin[r0.coordonnees] &amp;&amp; r0 in r1.receptaclesVoisins&#x000a;&#x000a;&#x0009;// Verifie que chaque receptacle soit accessible depuis les entrepots&#x000a;    all e0 : Entrepot, r0 : Receptacle &#x000a;&#x0009;&#x0009;| some r1 : e0.receptaclesVoisinsEntrepot &#x000a;&#x0009;&#x0009;&#x0009;| r0 in r1.*receptaclesVoisins&#x000a;}&#x000a;&#x000a;&#x000a;/*&#x000a;pred capacitesReceptacles&#x000a;{&#x000a;&#x0009;all r : Receptacle | r.capaciteMax = 7 &amp;&amp; r.contenanceActuel = 0//RCAP&#x000a;}&#x000a;&#x000a;pred capacitesDrones&#x000a;{&#x000a;&#x0009;all d : Drone | d.capaciteMax = 2 &amp;&amp; d.contenanceActuel = 0 //DCAP&#x000a;}&#x000a;&#x000a;pred batterieDrones&#x000a;{&#x000a;&#x0009;all d : Drone | d.batterie = 3&#x000a;}&#x000a;*/&#x000a;&#x000a;/********************************* Assertions *********************************/&#x000a;&#x000a;/**&#x000a; * Verifie qu&apos;il n&apos;existe pas deux drones sur les memes coordonnees, a l&apos;exception&#x000a; * des entrepots.&#x000a; */&#x000a;assert assertCoordonneesDrones &#x000a;{&#x000a;&#x0009;no d0 : Drone, t : Time |&#x000a;&#x0009;&#x0009;(no e : Entrepot | e.coordonnees = d0.coordonnees.t) &#x000a; &#x0009; &amp;&amp;&#x0009;(some d1 : Drone | d0 != d1 &amp;&amp; d0.coordonnees.t = d1.coordonnees.t)&#x000a;}&#x000a;&#x000a;check assertCoordonneesDrones for 15 but 1 Entrepot, 2 Drone, 5 Receptacle, 4 Commande, 6 int, 10 Time&#x000a;&#x000a;/**&#x000a; * Verifie la tolerance d&apos;un cas particulier : 2 receptacles sont voisins d&apos;un&#x000a; * entrepot, sans etre voisins entre eux.&#x000a; * /!\ : Fonctionne que si la cardinalite des receptacles en sortie de l&apos;entrepot&#x000a; * est &gt; 1.&#x000a; */&#x000a;assert assertReceptablesVoisinsEntrepotMaisPasEntreEux &#x000a;{&#x000a;&#x0009;some r0, r1 : Receptacle, e0 : Entrepot&#x000a;&#x0009; | r0 != r1 &amp;&amp; &#x000a;&#x0009;   !r0.coordonnees.positionVoisin[r1.coordonnees] &amp;&amp; &#x000a;&#x0009;   e0.coordonnees.positionVoisin[r0.coordonnees] &amp;&amp;&#x000a;&#x0009;   e0.coordonnees.positionVoisin[r1.coordonnees]&#x000a;}&#x000a;check assertReceptablesVoisinsEntrepotMaisPasEntreEux for 8 but 6 int&#x000a;&#x000a;//mise en &#x00e9;vidence que &#x00e7;a ne marche pas pour le moment&#x000a;assert receptacleVoisinSontVoisins&#x000a;{&#x000a;&#x0009;all r:Receptacle | r.receptaclesVoisins.coordonnees.positionVoisin[r.coordonnees]&#x000a;}&#x000a;&#x000a;check receptacleVoisinSontVoisins for 7 but 6 int&#x000a;&#x000a;assert assertCommandes&#x000a;{&#x000a;&#x0009;no d0, d1 : Drone, t : Time |&#x000a;&#x0009;&#x0009;d0 != d1 &amp;&amp; #d0.commande.t = 1 &amp;&amp; d0.commande.t = d1.commande.t&#x000a;}&#x000a;&#x000a;check assertCommandes for 15 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot, 2 Commande&#x000a;&#x000a;/********************************* Lancements *********************************/&#x000a;&#x000a;/**&#x000a; * Predicat vide permettant la simulation&#x000a; */ &#x000a;pred go&#x000a;{&#x000a;&#x0009;// Placement de l&apos;entrep&#x00f4;t au centre de la carte&#x000a;&#x0009;one e : Entrepot | e.coordonnees.x = 0 &amp;&amp; e.coordonnees.y = 0&#x000a;&#x000a;&#x0009;// Une commande rapprochee&#x000a;&#x0009;//one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 &amp;&amp; c.coordonneesLivraison.y = 2 &amp;&amp; c.coordonneesLivraison = r.coordonnees&#x000a;&#x000a;&#x0009;// Limite sur la taille de la carte&#x000a;&#x0009;all c : Coordonnees | c.x &lt;= 8 &amp;&amp; c.x &gt;= -8 &amp;&amp; c.y &lt;= 8 &amp;&amp; c.y &gt;= -8&#x000a;}&#x000a;&#x000a;run go for 15 but 1 Drone, 5 Receptacle, 6 int, 1 Entrepot, 1 Commande&#x000a;&#x000a;"/>
+
+<source filename="/$alloy4$/models/util/integer.als" content="module util/integer&#x000a;&#x000a;/*&#x000a; * A collection of utility functions for using Integers in Alloy.&#x000a; * Note that integer overflows are silently truncated to the current bitwidth&#x000a; * using the 2&apos;s complement arithmetic, unless the &quot;forbid overfows&quot; option is&#x000a; * turned on, in which case only models that don&apos;t have any overflows are &#x000a; * analyzed. &#x000a; */&#x000a;&#x000a;fun add  [n1, n2: Int] : Int { this/plus[n1, n2] }&#x000a;fun plus [n1, n2: Int] : Int { n1 fun/add n2 }&#x000a;&#x000a;fun sub   [n1, n2: Int] : Int { this/minus[n1, n2] }&#x000a;fun minus [n1, n2: Int] : Int { n1 fun/sub n2 }&#x000a;&#x000a;fun mul [n1, n2: Int] : Int { n1 fun/mul n2 }&#x000a;&#x000a;/**&#x000a; * Performs the division with &quot;round to zero&quot; semantics, except the following 3 cases&#x000a; * 1) if a is 0, then it returns 0&#x000a; * 2) else if b is 0, then it returns 1 if a is negative and -1 if a is positive&#x000a; * 3) else if a is the smallest negative integer, and b is -1, then it returns a&#x000a; */&#x000a;fun div [n1, n2: Int] : Int { n1 fun/div n2 }&#x000a;&#x000a;/** answer is defined to be the unique integer that satisfies &quot;a = ((a/b)*b) + remainder&quot; */&#x000a;fun rem [n1, n2: Int] : Int { n1 fun/rem n2 }&#x000a;&#x000a;/** negate */&#x000a;fun negate [n: Int] : Int { 0 fun/sub n }&#x000a;&#x000a;/** equal to */&#x000a;pred eq [n1, n2: Int] { int[n1] = int[n2] }&#x000a;&#x000a;/** greater than */&#x000a;pred gt [n1, n2: Int] { n1 &gt; n2 }&#x000a;&#x000a;/** less then */&#x000a;pred lt [n1, n2: Int] { n1 &lt; n2 }&#x000a;&#x000a;/** greater than or equal */&#x000a;pred gte [n1, n2: Int] { n1 &gt;= n2 }&#x000a;&#x000a;/** less than or equal */&#x000a;pred lte [n1, n2: Int] { n1 &lt;= n2 }&#x000a;&#x000a;/** integer is zero */&#x000a;pred zero [n: Int] { n = 0 }&#x000a;&#x000a;/** positive */&#x000a;pred pos  [n: Int] { n &gt; 0 }&#x000a;&#x000a;/** negative */&#x000a;pred neg  [n: Int] { n &lt; 0 }&#x000a;&#x000a;/** non-positive */&#x000a;pred nonpos [n: Int] { n &lt;= 0 }&#x000a;&#x000a;/** non-negative */&#x000a;pred nonneg [n: Int] { n &gt;= 0 }&#x000a;&#x000a;/** signum (aka sign or sgn) */&#x000a;fun signum [n: Int] : Int { n&lt;0 =&gt; (0 fun/sub 1) else (n&gt;0 =&gt; 1 else 0) }&#x000a;&#x000a;/**&#x000a; * returns the ith element (zero-based) from the set s&#x000a; * in the ordering of &apos;next&apos;, which is a linear ordering&#x000a; * relation like that provided by util/ordering&#x000a; */&#x000a;fun int2elem[i: Int, next: univ-&gt;univ, s: set univ] : lone s {&#x000a;  {e: s | #^next.e = int i }&#x000a;}&#x000a;&#x000a;/**&#x000a; * returns the index of the element (zero-based) in the&#x000a; * ordering of next, which is a linear ordering relation&#x000a; * like that provided by util/ordering&#x000a; */&#x000a;fun elem2int[e: univ, next: univ-&gt;univ] : lone Int {&#x000a;  Int[#^next.e]&#x000a;}&#x000a;&#x000a;/** returns the largest integer in the current bitwidth */&#x000a;fun max:one Int { fun/max }&#x000a;&#x000a;/** returns the smallest integer in the current bitwidth */&#x000a;fun min:one Int { fun/min }&#x000a;&#x000a;/** maps each integer (except max) to the integer after it */&#x000a;fun next:Int-&gt;Int { fun/next }&#x000a;&#x000a;/** maps each integer (except min) to the integer before it */&#x000a;fun prev:Int-&gt;Int { ~next }&#x000a;&#x000a;/** given a set of integers, return the largest element */&#x000a;fun max [es: set Int]: lone Int { es - es.^prev }&#x000a;&#x000a;/** given a set of integers, return the smallest element */&#x000a;fun min [es: set Int]: lone Int { es - es.^next }&#x000a;&#x000a;/** given an integer, return all integers prior to it */&#x000a;fun prevs [e: Int]: set Int { e.^prev }&#x000a;&#x000a;/** given an integer, return all integers following it */&#x000a;fun nexts [e: Int]: set Int { e.^next }&#x000a;&#x000a;/** returns the larger of the two integers */&#x000a;fun larger [e1, e2: Int]: Int { let a=int[e1], b=int[e2] | (a&lt;b =&gt; b else a) }&#x000a;&#x000a;/** returns the smaller of the two integers */&#x000a;fun smaller [e1, e2: Int]: Int { let a=int[e1], b=int[e2] | (a&lt;b =&gt; a else b) }&#x000a;"/>
+
+<source filename="/$alloy4$/models/util/ordering.als" content="module util/ordering[exactly elem]&#x000a;&#x000a;/*&#x000a; * Creates a single linear ordering over the atoms in elem. It also constrains all&#x000a; * the atoms to exist that are permitted by the scope on elem. That is, if the scope&#x000a; * on a signature S is 5, opening util/ordering[S] will force S to have 5 elements&#x000a; * and create a linear ordering over those five elements. The predicates and&#x000a; * functions below provide access to properties of the linear ordering, such as&#x000a; * which element is first in the ordering, or whether a given element precedes&#x000a; * another. You cannotcreate multiple linear orderings over the same signature with&#x000a; * this model. If you that functionality, try using the util/sequence module instead.&#x000a; *&#x000a; * Technical comment:&#x000a; * An important constraint: elem must contain all atoms permitted by the scope.&#x000a; * This is to let the analyzer optimize the analysis by setting all fields of each&#x000a; * instantiation of Ord to predefined values: e.g. by setting &apos;last&apos; to the highest&#x000a; * atom of elem and by setting &apos;next&apos; to {&lt;T0,T1&gt;,&lt;T1,T2&gt;,...&lt;Tn-1,Tn&gt;}, where n is&#x000a; * the scope of elem. Without this constraint, it might not be true that Ord.last is&#x000a; * a subset of elem, and that the domain and range of Ord.next lie inside elem.&#x000a; *&#x000a; * author: Ilya Shlyakhter&#x000a; * revisions: Daniel jackson&#x000a; */&#x000a;&#x000a;private one sig Ord {&#x000a;   First: set elem,&#x000a;   Next: elem -&gt; elem&#x000a;} {&#x000a;   pred/totalOrder[elem,First,Next]&#x000a;}&#x000a;&#x000a;/** first */&#x000a;fun first: one elem { Ord.First }&#x000a;&#x000a;/** last */&#x000a;fun last: one elem { elem - (next.elem) }&#x000a;&#x000a;/** return a mapping from each element to its predecessor */&#x000a;fun prev : elem-&gt;elem { ~(Ord.Next) }&#x000a;&#x000a;/** return a mapping from each element to its successor */&#x000a;fun next : elem-&gt;elem { Ord.Next }&#x000a;&#x000a;/** return elements prior to e in the ordering */&#x000a;fun prevs [e: elem]: set elem { e.^(~(Ord.Next)) }&#x000a;&#x000a;/** return elements following e in the ordering */&#x000a;fun nexts [e: elem]: set elem { e.^(Ord.Next) }&#x000a;&#x000a;/** e1 is less than e2 in the ordering */&#x000a;pred lt [e1, e2: elem] { e1 in prevs[e2] }&#x000a;&#x000a;/** e1 is greater than e2 in the ordering */&#x000a;pred gt [e1, e2: elem] { e1 in nexts[e2] }&#x000a;&#x000a;/** e1 is less than or equal to e2 in the ordering */&#x000a;pred lte [e1, e2: elem] { e1=e2 || lt [e1,e2] }&#x000a;&#x000a;/** e1 is greater than or equal to e2 in the ordering */&#x000a;pred gte [e1, e2: elem] { e1=e2 || gt [e1,e2] }&#x000a;&#x000a;/** returns the larger of the two elements in the ordering */&#x000a;fun larger [e1, e2: elem]: elem { lt[e1,e2] =&gt; e2 else e1 }&#x000a;&#x000a;/** returns the smaller of the two elements in the ordering */&#x000a;fun smaller [e1, e2: elem]: elem { lt[e1,e2] =&gt; e1 else e2 }&#x000a;&#x000a;/**&#x000a; * returns the largest element in es&#x000a; * or the empty set if es is empty&#x000a; */&#x000a;fun max [es: set elem]: lone elem { es - es.^(~(Ord.Next)) }&#x000a;&#x000a;/**&#x000a; * returns the smallest element in es&#x000a; * or the empty set if es is empty&#x000a; */&#x000a;fun min [es: set elem]: lone elem { es - es.^(Ord.Next) }&#x000a;&#x000a;assert correct {&#x000a;  let mynext = Ord.Next |&#x000a;  let myprev = ~mynext | {&#x000a;     ( all b:elem | (lone b.next) &amp;&amp; (lone b.prev) &amp;&amp; (b !in b.^mynext) )&#x000a;     ( (no first.prev) &amp;&amp; (no last.next) )&#x000a;     ( all b:elem | (b!=first &amp;&amp; b!=last) =&gt; (one b.prev &amp;&amp; one b.next) )&#x000a;     ( !one elem =&gt; (one first &amp;&amp; one last &amp;&amp; first!=last &amp;&amp; one first.next &amp;&amp; one last.prev) )&#x000a;     ( one elem =&gt; (first=elem &amp;&amp; last=elem &amp;&amp; no myprev &amp;&amp; no mynext) )&#x000a;     ( myprev=~mynext )&#x000a;     ( elem = first.*mynext )&#x000a;     (all disj a,b:elem | a in b.^mynext or a in b.^myprev)&#x000a;     (no disj a,b:elem | a in b.^mynext and a in b.^myprev)&#x000a;     (all disj a,b,c:elem | (b in a.^mynext and c in b.^mynext) =&gt;(c in a.^mynext))&#x000a;     (all disj a,b,c:elem | (b in a.^myprev and c in b.^myprev) =&gt;(c in a.^myprev))&#x000a;  }&#x000a;}&#x000a;run {} for exactly 0 elem expect 0&#x000a;run {} for exactly 1 elem expect 1&#x000a;run {} for exactly 2 elem expect 1&#x000a;run {} for exactly 3 elem expect 1&#x000a;run {} for exactly 4 elem expect 1&#x000a;check correct for exactly 0 elem&#x000a;check correct for exactly 1 elem&#x000a;check correct for exactly 2 elem&#x000a;check correct for exactly 3 elem&#x000a;check correct for exactly 4 elem&#x000a;check correct for exactly 5 elem&#x000a;"/>
+
+<source filename="/$alloy4$/models/util/boolean.als" content="module util/boolean&#x000a;&#x000a;/*&#x000a; * Creates a Bool type with two singleton subtypes: True&#x000a; * and False. Provides common boolean operations.&#x000a; *&#x000a; * author: Greg Dennis&#x000a; */&#x000a;&#x000a;abstract sig Bool {}&#x000a;one sig True, False extends Bool {}&#x000a;&#x000a;pred isTrue[b: Bool] { b in True }&#x000a;&#x000a;pred isFalse[b: Bool] { b in False }&#x000a;&#x000a;fun Not[b: Bool] : Bool {&#x000a;  Bool - b&#x000a;}&#x000a;&#x000a;fun And[b1, b2: Bool] : Bool {&#x000a;  subset_[b1 + b2, True]&#x000a;}&#x000a;&#x000a;fun Or[b1, b2: Bool] : Bool {&#x000a;  subset_[True, b1 + b2]&#x000a;}&#x000a;&#x000a;fun Xor[b1, b2: Bool] : Bool {&#x000a;  subset_[Bool, b1 + b2]&#x000a;}&#x000a;&#x000a;fun Nand[b1, b2: Bool] : Bool {&#x000a;  subset_[False, b1 + b2]&#x000a;}&#x000a;&#x000a;fun Nor[b1, b2: Bool] : Bool {&#x000a;  subset_[b1 + b2, False]&#x000a;}&#x000a;&#x000a;fun subset_[s1, s2: set Bool] : Bool {&#x000a;  (s1 in s2) =&gt; True else False&#x000a;}&#x000a;"/>
+
+</alloy>
