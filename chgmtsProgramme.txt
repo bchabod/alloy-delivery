@@ -1,3 +1,5 @@
+1.
+
 assert receptacleVoisinSontVoisins
 {
 	all r:Receptacle | r.receptaclesVoisins.coordonnees.positionVoisin[r.coordonnees]
@@ -11,3 +13,6 @@ A permis de tester si tous les receptacles sont bien voisins. Ça n'était pas le 
 	Nous avons donc changé en quelque chose de plus explicite:
 	
 	all r0: Receptacle | all r1 : r0.receptaclesVoisins | r1.coordonnees.positionVoisin[r0.coordonnees] && r0 in r1.receptaclesVoisins.
+
+2.	
+	On fait l'hypothèse que toutes les commandes soient découpées en un produit par commande, et que les receptacles sont direct vidés après avoir déposé dedans

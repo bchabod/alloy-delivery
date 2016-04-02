@@ -32,8 +32,7 @@ sig Drone
 	batterie : Int one -> Time,
 	commande : Commande lone -> Time,
 	coordonneesCible : Coordonnees lone -> Time,
-//	capaciteMax : Int, 
-//	contenanceActuel : Int,
+	capaciteMax : Int, 
 	coordReceptaclesVisites : Coordonnees set -> Time
 }
 
@@ -46,8 +45,8 @@ sig Drone
 sig Receptacle
 {
     coordonnees : Coordonnees,
-//	capaciteMax : Int, 
-//	contenanceActuel : Int
+	capaciteMax : Int, 
+	contenanceActuelle : Int one -> Time ,
 	receptaclesVoisins : some Receptacle
 }
 
@@ -86,7 +85,7 @@ sig Coordonnees
 sig Commande
 {
 	coordonneesLivraison : Coordonnees,
-//	contenanceActuelle: Int
+	poids: one Int,
 }
 /********************************* Fonctions *********************************/
 
@@ -117,16 +116,16 @@ fact invCoordonnees
 	predCoordonnees
 
 	receptaclesVoisins
+	poidsCommandes
 }
 
-/*
+
 fact initCapacites
 {
 	capacitesReceptacles
 	capacitesDrones
-	batterieDrones
 }
-*/
+
 
 /**
  * Sequences d'execution
@@ -137,9 +136,16 @@ fact traces
 	all t: Time - to/last 
 		| let t' = t.next 
 			| all drone: Drone 
-				|  (rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone] || skip[t, t', drone])
-//rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
+				|  (rechargerBatterie[t, t', drone] || livrer[t, t', drone]|| deplacerDroneVersCommande[t, t', drone] || deplacerDroneVersEntrepot[t, t', drone] || skip[t, t', drone])
+	
+	all t: Time - to/last 
+		| let t' = t.next 
+			| all r: Receptacle
+				| majReceptacle[t, t', r]
+	
+	//rechargerBatterie[t, t', drone] || livrer[t, t', drone] || deplacerDrone[t, t', drone]
 	all drone: Drone | #drone.commande.to/last = 0 && some e:Entrepot | drone.coordonnees.to/last = e.coordonnees
+
 }
 
 /**
@@ -156,8 +162,8 @@ pred init [t: Time]
 	//une commande ne peut pas être partagée entre 2 drones 
     no d0, d1: Drone | (d1 != d0 && d0.commande.t = d1.commande.t)
 	
-	// Tous les drones se chargent d'une commande TODO : à vérifier
-	all d: Drone | #d.commande.t = 1
+	// Tous les drones se chargent d'une commande 
+	all d: Drone | one c: Commande | d.commande.t = c
 	
 	// Initialisation du réceptacle cible des drones au réceptacle le plus proche, qui est dans l'ilot de la commande
 	all d: Drone, e: Entrepot | one r:Receptacle | d.coordonneesCible.t = r.coordonnees && r.coordonnees.positionVoisin[e.coordonnees]
@@ -167,11 +173,13 @@ pred init [t: Time]
 
 	// Les chemins sont nuls pour les drones à T0
 	all d: Drone | #d.coordReceptaclesVisites.t = 0
-	
+
+	//on initialise les contenances des receptacles
+	all r: Receptacle | r.contenanceActuelle.t = 0
+
 	// TODO : peut être mettre ailleurs, à voir
 	// Les chemins appartiennent seulement aux drones
 	//all c: Chemin | some d: Drone | d.cheminTraverse.t = c
-
 
 }
 
@@ -183,7 +191,8 @@ pred rechargerBatterie [t, t': Time, drone: Drone]
 {
 	// Précondition
 	drone.coordonnees.t = drone.coordonneesCible.t && drone.batterie.t < 3
-
+	
+	
 	// Nouvelles valeurs
 	drone.coordonnees.t' = drone.coordonnees.t
 	drone.coordonneesCible.t' = drone.coordonneesCible.t
@@ -306,8 +315,25 @@ pred livrer [t, t': Time, drone: Drone]
 	drone.coordReceptaclesVisites.t' = drone.coordReceptaclesVisites.t
 	drone.batterie.t' = drone.batterie.t
 
-	// TODO : Mettre commande à 0 -> commande doit dépendre du temps aussi !
 	#drone.commande.t' = 0
+}
+
+/**
+* Propage la contenance du receptacle aux coordonnees c à travers le temps.
+*/
+pred gererContenanceReceptacleTemps[t,t' : Time,c : Coordonnees]
+{
+	one r:Receptacle | r.coordonnees = c && r.contenanceActuelle.t' = r.contenanceActuelle.t
+}
+
+pred majReceptacle [t, t' : Time, r : Receptacle] 
+{
+	//soit on trouve un drone qui livre et on add le poids
+	(one d: Drone | d.coordonnees.t' = r.coordonnees && #d.commande.t = 1 && d.coordonnees.t = d.commande.t.coordonneesLivraison && d.batterie.t = 3 && 
+		 r.contenanceActuelle.t' = r.contenanceActuelle.t.add[d.commande.t.poids])
+	||
+	//soit on propage ce qu'il y avait avant
+		 r.contenanceActuelle.t' = r.contenanceActuelle.t
 }
 
 /********************************* Predicats *********************************/
@@ -415,22 +441,22 @@ pred receptaclesVoisins
 }
 
 
-/*
 pred capacitesReceptacles
 {
-	all r : Receptacle | r.capaciteMax = 7 && r.contenanceActuel = 0//RCAP
+	all r : Receptacle | r.capaciteMax = 12 //RCAP
 }
 
 pred capacitesDrones
 {
-	all d : Drone | d.capaciteMax = 2 && d.contenanceActuel = 0 //DCAP
+	all d : Drone | d.capaciteMax = 5 //DCAP
 }
 
-pred batterieDrones
+//on définit le poids des Commandes
+pred poidsCommandes
 {
-	all d : Drone | d.batterie = 3
+	all c: Commande | c.poids >= 1 && c.poids <= 5 
 }
-*/
+
 
 /********************************* Assertions *********************************/
 
@@ -485,7 +511,7 @@ pred go
 	//one c: Commande, r: Receptacle | c.coordonneesLivraison.x = 0 && c.coordonneesLivraison.y = 2 && c.coordonneesLivraison = r.coordonnees
 
 	// Limite sur la taille de la carte
-	all c : Coordonnees | c.x <= 8 && c.x >= -8 && c.y <= 8 && c.y >= -8
+	all c : Coordonnees | c.x <= 8 && c.x > -8 && c.y <= 8 && c.y > -8
 }
 
 run go for 10 but 2 Drone, 5 Receptacle, 6 int, 1 Entrepot
