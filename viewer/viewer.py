@@ -10,7 +10,8 @@ COLORS = {
     "GREY" : QColor(220,220,220),
     "ENTREPOT" : QColor(200,40,25,140),
     "RECEPTACLE" : QColor(25,200,60,140),
-    "COMMANDE" : QColor(255,255,102)
+    "COMMANDE" : QColor(255,255,102),
+    "MULTIDRONE" : QColor(107,218,255)
 }
 
 SCALE = 10
@@ -52,13 +53,14 @@ class Scene(QtGui.QGraphicsScene):
 
     def updateScene(self):
         items = self.items()
+        radius = 1.0
+
         for i in items:
             if not (isinstance(i, QGraphicsItemGroup) or (isinstance(i, QGraphicsLineItem) and i.group() == self.gridGroup)):
                 self.removeItem(i)
 
         for r in self.mainWindow.receptacles:
             coords = self.mainWindow.coordinates[r["ckey"]]
-            radius = 1.0
             color = QBrush(COLORS["RECEPTACLE"]) if r["label"].startswith("Receptacle") else QBrush(COLORS["ENTREPOT"])
             el = self.addEllipse(0-radius/2, 0-radius/2, radius, radius, QtGui.QPen(COLORS["BLACK"]), color)
             el.setPos(coords["x"], coords["y"])
@@ -111,11 +113,26 @@ class Scene(QtGui.QGraphicsScene):
                     rect.top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
 
         for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
-                coords = self.mainWindow.coordinates[drone["ckey"]]
-                d = self.addPixmap(self.droneMap)
-                d.scale(DRONE_SCALE, DRONE_SCALE)
-                d.setOffset(-self.droneMap.width()/2,-self.droneMap.height()/2)
-                d.setPos(coords["x"], coords["y"])
+            coords = self.mainWindow.coordinates[drone["ckey"]]
+            d = self.addPixmap(self.droneMap)
+            d.scale(DRONE_SCALE, DRONE_SCALE)
+            d.setOffset(-self.droneMap.width()/2,-self.droneMap.height()/2)
+            d.setPos(coords["x"], coords["y"])
+
+        for ckey, cobj in self.mainWindow.coordinates.items():
+            counter = 0
+            for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
+                if drone["ckey"]==ckey:
+                    counter = counter + 1
+            if counter>1:
+                rect = QRectF(QPointF(0,0), QPointF(0.25, 0.25))
+                rect.moveCenter(QPointF(cobj["x"] + radius/4, cobj["y"] - radius/4))
+                self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["MULTIDRONE"]))
+                font = QtGui.QFont("Georgia", 10);
+                label = self.addText("x" + str(counter), font)
+                label.scale(0.01, 0.01)
+                label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
+                    rect.top() + (0.1) - label.sceneBoundingRect().height()/2)
 
 class View(QtGui.QGraphicsView):
     def __init__(self):
