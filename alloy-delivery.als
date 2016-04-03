@@ -350,11 +350,11 @@ pred livrer [t, t': Time, drone: Drone]
 pred majReceptacle [t, t' : Time, r : Receptacle] 
 {
 	//soit on trouve un drone qui livre et on add le poids
-	(one d: Drone | #d.commande.t = 1 && d.coordonnees.t = d.commande.t.coordonneesLivraison && d.batterie.t = 3 && 
+	(one d: Drone | #d.commande.t = 1 && d.coordonnees.t = d.commande.t.coordonneesLivraison && d.batterie.t = 3 && r.coordonnees = d.coordonnees.t &&
 		 r.contenanceActuelle.t' = r.contenanceActuelle.t.add[d.commande.t.poids])
 	<=> not
 	//soit on propage ce qu'il y avait avant, ou on le vide aléatoirement
-		( r.contenanceActuelle.t' = r.contenanceActuelle.t || r.contenanceActuelle.t' = 0)
+		( r.contenanceActuelle.t' = r.contenanceActuelle.t || ( r.contenanceActuelle.t' = 0))
 }
 
 /********************************* Predicats *********************************/
