@@ -103,7 +103,7 @@ class Scene(QtGui.QGraphicsScene):
                 if(foundFreeSpot):
                     break
             if not foundFreeSpot:
-                print "WARNING: could not place label for commande, dirty spot will be used"
+                print("WARNING: could not place label for commande, dirty spot will be used")
             l = self.addLine(line, QtGui.QPen(COLORS["BLACK"]))
             r = self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
             font = QtGui.QFont("Georgia", 10);
