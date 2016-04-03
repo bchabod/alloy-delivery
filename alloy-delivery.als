@@ -356,7 +356,7 @@ pred majReceptacle [t, t' : Time, r : Receptacle]
 	//soit on propage ce qu'il y avait avant, ou on le vide aléatoirement
 		( r.contenanceActuelle.t' = r.contenanceActuelle.t || ( r.contenanceActuelle.t' = 0))
 }
-
+ 
 /********************************* Predicats *********************************/
 
 /** 
