@@ -8,6 +8,7 @@ COLORS = {
     "BLACK" : QColor(0,0,0),
     "RED" : QColor(255,120,120),
     "GREY" : QColor(220,220,220),
+    "DARKGREY" : QColor(150,150,150),
     "ENTREPOT" : QColor(200,40,25,140),
     "RECEPTACLE" : QColor(25,200,60,140),
     "COMMANDE" : QColor(255,255,102),
@@ -52,6 +53,44 @@ class Scene(QtGui.QGraphicsScene):
                 l.setGroup(self.gridGroup)
         self.addItem(self.gridGroup)
 
+    def findSpot(self, coords, nbLines):
+        spot = QPointF(coords["x"], coords["y"])
+        rect = QRectF()
+        line = QLineF()
+        for far in range(2,5):
+            foundFreeSpot = False
+            for delta in delta_pos:
+                newcoords = {
+                    "x" : coords["x"] + delta[0]*far,
+                    "y" : coords["y"] + delta[1]*far
+                }
+                rect = QRectF(QPointF(0,0), QPointF(1, 0.5 * nbLines))
+                rect.moveCenter(QPointF(newcoords["x"], newcoords["y"]))
+                line = QLineF(coords["x"], coords["y"], rect.center().x(), rect.center().y())
+                foundFreeSpot = True
+                items = self.items()
+                for i in items:
+                    r2 = i.sceneBoundingRect()
+                    if(r2.contains(spot) or isinstance(i, QGraphicsLineItem)):
+                        continue
+                    if (not (isinstance(i, QGraphicsItemGroup)) and ( (rect.intersects(r2)) or ( \
+                    line.intersect(QLineF(r2.topRight(), r2.topLeft()), QPointF())==QLineF.BoundedIntersection or \
+                    line.intersect(QLineF(r2.topRight(), r2.bottomRight()), QPointF())==QLineF.BoundedIntersection or \
+                    line.intersect(QLineF(r2.bottomLeft(), r2.topLeft()), QPointF())==QLineF.BoundedIntersection or \
+                    line.intersect(QLineF(r2.bottomRight(), r2.bottomLeft()), QPointF())==QLineF.BoundedIntersection ))):
+                        foundFreeSpot = False
+                        break
+                if(foundFreeSpot):
+                    break
+            if(foundFreeSpot):
+                break
+        if not foundFreeSpot:
+            print("WARNING: could not place a label, dirty spot will be used")
+        return {
+            "rect" : rect,
+            "line" : line
+        }
+
     def updateScene(self):
         items = self.items()
         radius = 1.0
@@ -60,7 +99,7 @@ class Scene(QtGui.QGraphicsScene):
             if not (isinstance(i, QGraphicsItemGroup) or (isinstance(i, QGraphicsLineItem) and i.group() == self.gridGroup)):
                 self.removeItem(i)
 
-        for r in self.mainWindow.receptacles:
+        for r in self.mainWindow.receptacles[int(self.mainWindow.time_control.value())]:
             coords = self.mainWindow.coordinates[r["ckey"]]
             color = QBrush(COLORS["RECEPTACLE"]) if r["label"].startswith("Receptacle") else QBrush(COLORS["ENTREPOT"])
             el = self.addEllipse(0-radius/2, 0-radius/2, radius, radius, QtGui.QPen(COLORS["BLACK"]), color)
@@ -70,48 +109,35 @@ class Scene(QtGui.QGraphicsScene):
             label.scale(0.02, 0.02)
             label.setPos(coords["x"] - label.sceneBoundingRect().width()/2, coords["y"]- label.sceneBoundingRect().height()/2)
 
+            #Add receptacle content
+            if(r["label"].startswith("Receptacle")):
+                rect = QRectF(QPointF(0,0), QPointF(0.25, 0.25))
+                rect.moveCenter(QPointF(coords["x"] + radius/4, coords["y"] - radius/4))
+                self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
+                font = QtGui.QFont("Georgia", 10);
+                label = self.addText(r["contenance"], font)
+                label.scale(0.01, 0.01)
+                label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
+                    rect.top() + (0.1) - label.sceneBoundingRect().height()/2)
+
         for ckey, d in self.mainWindow.commandes.items():
             coords = self.mainWindow.coordinates[ckey]
-            spot = QPointF(coords["x"], coords["y"])
-            rect = QRectF()
-            line = QLineF()
-            for far in range(2,5):
-                foundFreeSpot = False
-                for delta in delta_pos:
-                    newcoords = {
-                        "x" : coords["x"] + delta[0]*far,
-                        "y" : coords["y"] + delta[1]*far
-                    }
-                    rect = QRectF(QPointF(0,0), QPointF(1, 0.5 * len(d)))
-                    rect.moveCenter(QPointF(newcoords["x"], newcoords["y"]))
-                    line = QLineF(coords["x"], coords["y"], rect.center().x(), rect.center().y())
-                    foundFreeSpot = True
-                    items = self.items()
-                    for i in items:
-                        r2 = i.sceneBoundingRect()
-                        if(r2.contains(spot) or isinstance(i, QGraphicsLineItem)):
-                            continue
-                        if (not (isinstance(i, QGraphicsItemGroup)) and ( (rect.intersects(r2)) or ( \
-                        line.intersect(QLineF(r2.topRight(), r2.topLeft()), QPointF())==QLineF.BoundedIntersection or \
-                        line.intersect(QLineF(r2.topRight(), r2.bottomRight()), QPointF())==QLineF.BoundedIntersection or \
-                        line.intersect(QLineF(r2.bottomLeft(), r2.topLeft()), QPointF())==QLineF.BoundedIntersection or \
-                        line.intersect(QLineF(r2.bottomRight(), r2.bottomLeft()), QPointF())==QLineF.BoundedIntersection ))):
-                            foundFreeSpot = False
-                            break
-                    if(foundFreeSpot):
-                        break
-                if(foundFreeSpot):
-                    break
-            if not foundFreeSpot:
-                print("WARNING: could not place label for commande, dirty spot will be used")
-            l = self.addLine(line, QtGui.QPen(COLORS["BLACK"]))
-            r = self.addRect(rect, QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
+            nbLines = len(d)
+            freeSpot = self.findSpot(coords, nbLines)
+            l = self.addLine(freeSpot["line"], QtGui.QPen(COLORS["BLACK"]))
+            r = self.addRect(freeSpot["rect"], QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["COMMANDE"]))
             font = QtGui.QFont("Georgia", 10);
             for index in range(0, len(d)):
+                if(d[index]["done"] <= int(self.mainWindow.time_control.value())):
+                    font.setStrikeOut(True)
+                else:
+                    font.setStrikeOut(False)
                 label = self.addText(d[index]["label"].replace("Commande", "c") + " : " + d[index]["demande"], font)
                 label.scale(0.015, 0.015)
-                label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
-                    rect.top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
+                label.setPos(freeSpot["rect"].center().x() - label.sceneBoundingRect().width()/2, 
+                    freeSpot["rect"].top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
+                if(d[index]["done"] <= int(self.mainWindow.time_control.value())):
+                    label.setDefaultTextColor(COLORS["DARKGREY"])
 
         for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
             coords = self.mainWindow.coordinates[drone["ckey"]]
@@ -122,10 +148,25 @@ class Scene(QtGui.QGraphicsScene):
 
         for ckey, cobj in self.mainWindow.coordinates.items():
             counter = 0
+            drones = []
             for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
                 if drone["ckey"]==ckey:
                     counter = counter + 1
-                    lastDrone = drone
+                    drones.append(drone)
+
+            #Add products labels
+            if counter>=1:
+                freeSpot = self.findSpot(cobj, len(drones))
+                l = self.addLine(freeSpot["line"], QtGui.QPen(COLORS["BLACK"]))
+                r = self.addRect(freeSpot["rect"], QtGui.QPen(COLORS["BLACK"]), QBrush(COLORS["MULTIDRONE"]))
+                font = QtGui.QFont("Georgia", 10);
+                for index in range(0, len(drones)):
+                    label = self.addText(drones[index]["label"].replace("Drone", "d") + " : " + drones[index]["contenance"], font)
+                    label.scale(0.015, 0.015)
+                    label.setPos(freeSpot["rect"].center().x() - label.sceneBoundingRect().width()/2, 
+                        freeSpot["rect"].top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
+
+            #Add drone counter of battery levels
             if counter>1:
                 rect = QRectF(QPointF(0,0), QPointF(0.25, 0.25))
                 rect.moveCenter(QPointF(cobj["x"] + radius/4, cobj["y"] - radius/4))
@@ -136,9 +177,9 @@ class Scene(QtGui.QGraphicsScene):
                 label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
                     rect.top() + (0.1) - label.sceneBoundingRect().height()/2)
             elif counter==1:
-                b = self.addPixmap(self.batteryMap[lastDrone["battery"]])
+                b = self.addPixmap(self.batteryMap[drones[0]["battery"]])
                 b.scale(DRONE_SCALE/2, DRONE_SCALE/2)
-                b.setOffset(-self.batteryMap[lastDrone["battery"]].width()/2,-self.batteryMap[lastDrone["battery"]].height()/2)
+                b.setOffset(-self.batteryMap[drones[0]["battery"]].width()/2,-self.batteryMap[drones[0]["battery"]].height()/2)
                 b.setPos(cobj["x"], cobj["y"])
 
 class View(QtGui.QGraphicsView):
@@ -238,7 +279,7 @@ class MainWindow(QtGui.QWidget):
         self.time_control.setMaximum(nbSteps-1)
         self.time_control.setValue(0)
         self.drones = [[] for i in range(nbSteps)]
-        self.receptacles = []
+        self.receptacles = [[] for i in range(nbSteps)]
         self.commandes = {}
 
         #Place each object
@@ -252,30 +293,75 @@ class MainWindow(QtGui.QWidget):
                     if(b[0].get("label")==label and b[2].get("label")==t[2].get("label")):
                         bLevel = int(b[1].get("label"))
 
+                #Check if there is a delivery goal at this timestamp
+                #If there is one, try to get the goal number of products
+                contenance = "0"
+                cible = ""
+                for d in tree.findall(".//field[@label='commande']/tuple"):
+                    if(d[0].get("label")==label and d[2].get("label")==t[2].get("label")):
+                        cible = d[1].get("label")
+                        for dp in tree.findall(".//field[@label='poids']/tuple"):
+                            if(dp[0].get("label") == cible):
+                                contenance = dp[1].get("label")
+
                 self.drones[int(t[2].get("label")[5])].append({
                     'label' : label,
                     'ckey' : t[1].get("label"),
-                    'battery' : bLevel
+                    'battery' : bLevel,
+                    'contenance' : contenance,
+                    'cible' : cible
                 })
-            elif(label.startswith("Receptacle") or label.startswith("Entrepot")):
-                self.receptacles.append({
-                    'label' : label,
-                    'ckey' : t[1].get("label")
-                })
+
+            elif(label.startswith("Receptacle")):
+                #Get receptacle weight timeline
+                for nb in tree.findall(".//field[@label='contenanceActuelle']/tuple"):
+                    if(nb[0].get("label") == label):
+                        self.receptacles[int(nb[2].get("label")[5])].append({
+                            'label' : label,
+                            'ckey' : t[1].get("label"),
+                            'contenance' : nb[1].get("label")
+                        })
+
+            elif(label.startswith("Entrepot")):
+                for step in range(0, nbSteps):
+                    self.receptacles[step].append({
+                        'label' : label,
+                        'ckey' : t[1].get("label"),
+                    })
+
 
         #Get deliveries
         for d in tree.findall(".//field[@label='coordonneesLivraison']/tuple"):
+            label = d[0].get("label")
+
+            #Find nbProducts needed for this delivery
+            nbProducts = 3
+            for nb in tree.findall(".//field[@label='poids']/tuple"):
+                if(nb[0].get("label")==label):
+                    nbProducts = nb[1].get("label")
+
+            #Try to figure out when this delivery is fulfilled
+            #Default value is nbSteps+1 = never
+            doneTime = nbSteps+1
+            for indexDrone in range(0, len(self.drones[0])):
+                for time in range(0, nbSteps-1):
+                    if (self.drones[time][indexDrone]["cible"] == label and \
+                    self.drones[time+1][indexDrone]["cible"] == ""):
+                        doneTime = time+1
+
             ckey = d[1].get("label")
             if ckey in self.commandes:
                 self.commandes[ckey].append({
-                    'label' : d[0].get("label"),
-                    'demande' : 3
+                    'label' : label,
+                    'demande' : nbProducts,
+                    'done' : doneTime
                 })
             else:
                 self.commandes[ckey] = [
                     {
-                        'label' : d[0].get("label"),
-                        'demande' : "3"
+                        'label' : label,
+                        'demande' : nbProducts,
+                        'done' : doneTime
                     }
                 ]
 
