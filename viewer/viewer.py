@@ -29,6 +29,12 @@ delta_pos = [
     [-1, 1]
 ]
 
+"""
+-----------------------------------------------
+----- Class representing the PyQT canvas ------
+        Used to update the view only
+-----------------------------------------------
+"""
 class Scene(QtGui.QGraphicsScene):
     def __init__(self, windowParam):
         QtGui.QGraphicsScene.__init__(self)
@@ -53,6 +59,7 @@ class Scene(QtGui.QGraphicsScene):
                 l.setGroup(self.gridGroup)
         self.addItem(self.gridGroup)
 
+    #Special function to find a free spot on the canvas for a label
     def findSpot(self, coords, nbLines):
         spot = QPointF(coords["x"], coords["y"])
         rect = QRectF()
@@ -120,6 +127,7 @@ class Scene(QtGui.QGraphicsScene):
                 label.setPos(rect.center().x() - label.sceneBoundingRect().width()/2, 
                     rect.top() + (0.1) - label.sceneBoundingRect().height()/2)
 
+        #Display deliveries labels for concerned receptacles
         for ckey, d in self.mainWindow.commandes.items():
             coords = self.mainWindow.coordinates[ckey]
             nbLines = len(d)
@@ -139,6 +147,7 @@ class Scene(QtGui.QGraphicsScene):
                 if(d[index]["done"] <= int(self.mainWindow.time_control.value())):
                     label.setDefaultTextColor(COLORS["DARKGREY"])
 
+        #Display drones
         for drone in self.mainWindow.drones[int(self.mainWindow.time_control.value())]:
             coords = self.mainWindow.coordinates[drone["ckey"]]
             d = self.addPixmap(self.droneMap)
@@ -166,7 +175,7 @@ class Scene(QtGui.QGraphicsScene):
                     label.setPos(freeSpot["rect"].center().x() - label.sceneBoundingRect().width()/2, 
                         freeSpot["rect"].top() + (0.5*index + 0.25) - label.sceneBoundingRect().height()/2)
 
-            #Add drone counter of battery levels
+            #Add drone counter or battery levels
             if counter>1:
                 rect = QRectF(QPointF(0,0), QPointF(0.25, 0.25))
                 rect.moveCenter(QPointF(cobj["x"] + radius/4, cobj["y"] - radius/4))
@@ -182,6 +191,12 @@ class Scene(QtGui.QGraphicsScene):
                 b.setOffset(-self.batteryMap[drones[0]["battery"]].width()/2,-self.batteryMap[drones[0]["battery"]].height()/2)
                 b.setPos(cobj["x"], cobj["y"])
 
+"""
+-----------------------------------------------
+----- Special class for canvas parameters -----
+-----------------------------------------------
+"""
+
 class View(QtGui.QGraphicsView):
     def __init__(self):
         QtGui.QGraphicsView.__init__(self)
@@ -195,6 +210,7 @@ class View(QtGui.QGraphicsView):
         self.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
         self.setRubberBandSelectionMode(QtCore.Qt.IntersectsItemShape)
    
+   #Handle the zooooom with wheel event
     def wheelEvent(self, event):
         zoomInFactor = 1.25
         zoomOutFactor = 1 / zoomInFactor
@@ -208,6 +224,12 @@ class View(QtGui.QGraphicsView):
         delta = newPos - oldPos
         self.translate(delta.x(), delta.y())
 
+"""
+-----------------------------------------------
+-----           Main Windows class        -----
+    Used to load the XML and capture events
+-----------------------------------------------
+"""
 
 class MainWindow(QtGui.QWidget):
 
@@ -274,7 +296,7 @@ class MainWindow(QtGui.QWidget):
             yval = ytuple[1].get("label")
             self.coordinates[ykey]['y'] = int(yval)
 
-        #Get number of time steps
+        #Get number of time steps and init
         nbSteps = len(tree.findall(".//sig[@label='this/Time']/atom"))
         self.time_control.setMaximum(nbSteps-1)
         self.time_control.setValue(0)
@@ -285,6 +307,8 @@ class MainWindow(QtGui.QWidget):
         #Place each object
         for t in tree.findall(".//field[@label='coordonnees']/tuple"):
             label = t[0].get("label")
+
+            #If this is a drone
             if(label.startswith("Drone")):
 
                 #Find battery level for this timestamp
@@ -312,6 +336,7 @@ class MainWindow(QtGui.QWidget):
                     'cible' : cible
                 })
 
+            #If this is a receptacle
             elif(label.startswith("Receptacle")):
                 #Get receptacle weight timeline
                 for nb in tree.findall(".//field[@label='contenanceActuelle']/tuple"):
@@ -322,13 +347,13 @@ class MainWindow(QtGui.QWidget):
                             'contenance' : nb[1].get("label")
                         })
 
+            #If this is a entrepot
             elif(label.startswith("Entrepot")):
                 for step in range(0, nbSteps):
                     self.receptacles[step].append({
                         'label' : label,
                         'ckey' : t[1].get("label"),
                     })
-
 
         #Get deliveries
         for d in tree.findall(".//field[@label='coordonneesLivraison']/tuple"):
@@ -368,11 +393,13 @@ class MainWindow(QtGui.QWidget):
         self.myscene.updateScene()
         self.time_control.setDisabled(False)
 
+    #Center the window on screen
     def center(self):
         resolution = QtGui.QDesktopWidget().screenGeometry()
         self.move((resolution.width() / 2) - (self.frameSize().width() / 2),
                   (resolution.height() / 2) - (self.frameSize().height()))
 
+#Special function to get a nice spinbox
 def spinBox(mini=0,maxi=100,value=50,precision=0,buttons=False,step=1):
     spinbox = QDoubleSpinBox()
     spinbox.setRange(mini,maxi)
