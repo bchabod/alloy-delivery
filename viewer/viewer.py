@@ -304,7 +304,7 @@ class MainWindow(QtGui.QWidget):
                             if(dp[0].get("label") == cible):
                                 contenance = dp[1].get("label")
 
-                self.drones[int(t[2].get("label")[5])].append({
+                self.drones[int(t[2].get("label")[5:])].append({
                     'label' : label,
                     'ckey' : t[1].get("label"),
                     'battery' : bLevel,
@@ -316,7 +316,7 @@ class MainWindow(QtGui.QWidget):
                 #Get receptacle weight timeline
                 for nb in tree.findall(".//field[@label='contenanceActuelle']/tuple"):
                     if(nb[0].get("label") == label):
-                        self.receptacles[int(nb[2].get("label")[5])].append({
+                        self.receptacles[int(nb[2].get("label")[5:])].append({
                             'label' : label,
                             'ckey' : t[1].get("label"),
                             'contenance' : nb[1].get("label")
