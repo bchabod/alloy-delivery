@@ -219,7 +219,7 @@ Avant de le traiter, interessons nous aux $D.j$. La condition du if est $\forall
 \vspace{\belowdisplayskip}
 
 On supposera dans cet algorithme que $D.i$ a été préalablement initialisé avec la valeur $Vrai$.
-On peut maintenant discuter de l'atomicité de la vérification de la condition du if, qui est {$\forall j:j \neq i : \neg D.j \vee (i \neq \alpha)$}. Cette opération de vérification n'est clairement pas atomique, et il paraît compliqué de la rendre atomique. Considérons le raisonnement suivant :  \\
+On peut maintenant discuter de l'atomicité de la vérification de la condition du if, qui est {$\forall j:j \neq i : \neg D.j \vee (i \neq \alpha)$}. Cette opération de vérification n'est clairement pas atomique, et il paraît compliqué de faire en sorte qu'elle le soit. Considérons le raisonnement suivant :  \\
 
 
 \begin{itemize}
